@@ -5,10 +5,9 @@ import { useState } from "react";
 export default function FirstLightPage() {
   const [submitted, setSubmitted] = useState(false);
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setSubmitted(true);
-  }
+function handleSubmit() {
+  setSubmitted(true);
+}
 
   return (
     <main className="min-h-screen bg-[#fbfaf7] text-[#18140d]">
@@ -258,27 +257,42 @@ export default function FirstLightPage() {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="grid gap-4">
+          <form
+  action="https://formspree.io/f/mjglwzya"
+  method="POST"
+  onSubmit={handleSubmit}
+  className="grid gap-4"
+>
             <input
-              className="rounded-2xl border border-[#d8c99f] p-4 outline-none transition focus:border-[#d4af37]"
-              placeholder="Name"
-            />
-            <input
-              className="rounded-2xl border border-[#d8c99f] p-4 outline-none transition focus:border-[#d4af37]"
-              placeholder="Email"
-            />
-            <textarea
-              className="min-h-28 rounded-2xl border border-[#d8c99f] p-4 outline-none transition focus:border-[#d4af37]"
-              placeholder="Describe the idea or problem"
-            />
-            <textarea
-              className="min-h-24 rounded-2xl border border-[#d8c99f] p-4 outline-none transition focus:border-[#d4af37]"
-              placeholder="What does the user input?"
-            />
-            <textarea
-              className="min-h-24 rounded-2xl border border-[#d8c99f] p-4 outline-none transition focus:border-[#d4af37]"
-              placeholder="What should the system return?"
-            />
+  name="name"
+  className="rounded-2xl border border-[#d8c99f] p-4 outline-none transition focus:border-[#d4af37]"
+  placeholder="Name"
+/>
+
+<input
+  name="email"
+  type="email"
+  className="rounded-2xl border border-[#d8c99f] p-4 outline-none transition focus:border-[#d4af37]"
+  placeholder="Email"
+/>
+
+<textarea
+  name="idea"
+  className="min-h-28 rounded-2xl border border-[#d8c99f] p-4 outline-none transition focus:border-[#d4af37]"
+  placeholder="Describe the idea or problem"
+/>
+
+<textarea
+  name="user_input"
+  className="min-h-24 rounded-2xl border border-[#d8c99f] p-4 outline-none transition focus:border-[#d4af37]"
+  placeholder="What does the user input?"
+/>
+
+<textarea
+  name="expected_output"
+  className="min-h-24 rounded-2xl border border-[#d8c99f] p-4 outline-none transition focus:border-[#d4af37]"
+  placeholder="What should the system return?"
+/>
 
             <button className="rounded-2xl bg-[#18140d] px-6 py-4 font-semibold text-white transition hover:bg-[#3a3022]">
               {submitted ? "Idea received" : "Submit idea"}
