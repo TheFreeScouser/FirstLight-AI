@@ -310,7 +310,7 @@ function handleSubmit() {
               LinkedIn
             </a>
             <a
-              href="mailto:hello@firstlight.ai"
+              href="ryanfleming@flemingengineers.com"
               className="hover:text-[#9a7624]"
             >
               Email
