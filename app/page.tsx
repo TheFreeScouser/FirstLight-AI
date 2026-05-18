@@ -28,6 +28,9 @@ function handleSubmit() {
             <a href="#submit" className="hover:text-[#9a7624]">
               Submit Idea
             </a>
+            <a href="/beacon-framework" className="hover:text-[#9a7624]">
+              Beacon Framework
+            </a>
           </nav>
 
           <a
@@ -320,6 +323,9 @@ function handleSubmit() {
               className="hover:text-[#9a7624]"
             >
               Email
+            </a>
+            <a href="/beacon-framework" className="hover:text-[#9a7624]">
+              Beacon Framework
             </a>
           </div>
         </div>
