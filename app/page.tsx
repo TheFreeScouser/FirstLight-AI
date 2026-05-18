@@ -306,9 +306,15 @@ function handleSubmit() {
         <div className="mx-auto flex max-w-6xl flex-col gap-4 text-sm text-[#6b604d] md:flex-row md:items-center md:justify-between">
           <p className="font-semibold text-[#18140d]">FirstLight AI</p>
           <div className="flex gap-6">
-            <a href="#" className="hover:text-[#9a7624]">
+            <a
+              href="https://www.linkedin.com/company/firstlightai/"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-[#9a7624]"
+            >
               LinkedIn
             </a>
+
             <a
               href="ryanfleming@flemingengineers.com"
               className="hover:text-[#9a7624]"
