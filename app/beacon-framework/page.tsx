@@ -1,64 +1,63 @@
 export default function BeaconFrameworkPage() {
   const stages = [
     {
-      code: "PD",
-      title: "Product Definition",
-      description:
-        "Clarify the idea, the user, the problem, and the commercial purpose before anything is built.",
+      code: "B0",
+      title: "Signal",
+      purpose: "Spot the real problem, opportunity, or user need.",
+      question: "What sparked this idea, and why does it matter now?",
     },
     {
-      code: "PF",
-      title: "Project Feasibility",
-      description:
-        "Check whether the tool is technically realistic, commercially useful, and supported by usable data.",
+      code: "B1",
+      title: "Shape",
+      purpose: "Turn the rough idea into a clear product concept.",
+      question: "Who is it for, what should it do, and what should it avoid?",
     },
     {
-      code: "KE",
-      title: "Concept Decision",
-      description:
-        "Decide whether the product should move forward, pivot, or stop based on evidence and scope.",
+      code: "B2",
+      title: "Proof",
+      purpose: "Check whether the idea has evidence behind it.",
+      question: "Has anyone asked for this, and what would prove people care?",
     },
     {
-      code: "LH",
-      title: "Product Specification",
-      description:
-        "Define the product requirements, user flow, input/output logic, data sources, and success criteria.",
+      code: "B3",
+      title: "Blueprint",
+      purpose: "Convert the idea into buildable requirements.",
+      question: "What does the user input, what comes back, and what data is needed?",
     },
     {
-      code: "LF",
-      title: "Launch Release",
-      description:
-        "Release a controlled working version that can be used, tested, and demonstrated.",
+      code: "B4",
+      title: "Build",
+      purpose: "Create the smallest useful working version.",
+      question: "What must V1 include, and what can wait?",
     },
     {
-      code: "PVS",
-      title: "Production Trial Series",
-      description:
-        "Test the product with real users, capture feedback, measure behaviour, and identify weak points.",
+      code: "B5",
+      title: "Trust",
+      purpose: "Make the product credible, safe, and clear.",
+      question: "What could make users doubt it, and how do we build confidence?",
     },
     {
-      code: "0S",
-      title: "Zero Series",
-      description:
-        "Run a near-final version with improved UX, cleaner data, and more robust workflows before wider release.",
+      code: "B6",
+      title: "Launch",
+      purpose: "Release the product in a controlled way.",
+      question: "Who should see the first live version, and what should it prove?",
     },
     {
-      code: "SOP",
-      title: "Start of Production",
-      description:
-        "Move from prototype to operational product with stable hosting, analytics, support, and handover.",
+      code: "B7",
+      title: "Learn",
+      purpose: "Use real behaviour and feedback to improve.",
+      question: "What should we track, and where might users drop off?",
     },
     {
-      code: "ME",
-      title: "Market Entry",
-      description:
-        "Launch commercially, gather customers, track adoption, and improve based on real-world use.",
+      code: "B8",
+      title: "Scale",
+      purpose: "Turn what works into a product, offer, or case study.",
+      question: "If it works, who pays, what grows, and what can be reused?",
     },
   ];
 
   return (
     <main className="min-h-screen bg-[#fbfaf7] text-[#18140d]">
-      {/* NAV */}
       <header className="sticky top-0 z-50 border-b border-[#eadfca]/70 bg-[#fbfaf7]/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
           <a href="/" className="text-xl font-semibold tracking-tight">
@@ -73,7 +72,7 @@ export default function BeaconFrameworkPage() {
               Work
             </a>
             <a href="/#submit" className="hover:text-[#9a7624]">
-              Submit Idea
+              Submit Brief
             </a>
           </nav>
 
@@ -86,7 +85,6 @@ export default function BeaconFrameworkPage() {
         </div>
       </header>
 
-      {/* HERO */}
       <section className="relative overflow-hidden px-6 py-28 md:py-36">
         <div className="absolute left-1/2 top-0 h-[500px] w-[900px] -translate-x-1/2 rounded-full bg-[#d4af37]/20 blur-3xl" />
 
@@ -103,19 +101,17 @@ export default function BeaconFrameworkPage() {
           </h1>
 
           <p className="mx-auto mt-7 max-w-3xl text-lg leading-8 text-[#5f5442] md:text-xl">
-            A structured gateway process for turning messy business ideas into
-            useful, validated AI products.
+            A structured method for turning messy ideas into useful AI products.
           </p>
 
           <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-[#6b604d]">
-            Built to bring product discipline to AI builds — so ideas are
-            defined, tested, released, and improved with clear decision points
-            instead of vague experimentation.
+            Beacon v2 helps FirstLight AI move from rough signal to working
+            product through clear stages: Signal, Shape, Proof, Blueprint,
+            Build, Trust, Launch, Learn and Scale.
           </p>
         </div>
       </section>
 
-      {/* WHY IT EXISTS */}
       <section className="px-6 pb-20">
         <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.85fr_1.15fr]">
           <div>
@@ -135,23 +131,23 @@ export default function BeaconFrameworkPage() {
             </p>
 
             <p className="mt-5 text-lg leading-8 text-[#5f5442]">
-              The Beacon Framework solves this by breaking the journey into
-              controlled gateways. Each stage has a purpose, a decision point,
-              and a clear output.
+              The Beacon Framework turns that messy starting point into a clear
+              path: define the signal, shape the idea, prove demand, blueprint
+              the system, build the smallest useful version, add trust, launch,
+              learn, and scale what works.
             </p>
           </div>
         </div>
       </section>
 
-      {/* FRAMEWORK STAGES */}
       <section className="px-6 py-24">
         <div className="mx-auto max-w-6xl">
           <div className="mb-12 text-center">
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[#9a7624]">
-              Gateway model
+              Beacon v2
             </p>
             <h2 className="mt-4 text-4xl font-semibold tracking-tight md:text-5xl">
-              From idea to market entry
+              From signal to scale
             </h2>
           </div>
 
@@ -169,15 +165,23 @@ export default function BeaconFrameworkPage() {
                 </div>
 
                 <p className="mt-5 text-sm leading-7 text-[#6b604d]">
-                  {stage.description}
+                  {stage.purpose}
                 </p>
+
+                <div className="mt-5 rounded-2xl bg-[#fbfaf7] p-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#9a7624]">
+                    Key question
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-[#5f5442]">
+                    {stage.question}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* HOW IT APPLIES */}
       <section className="px-6 py-24">
         <div className="mx-auto max-w-6xl rounded-[2rem] border border-[#eadfca] bg-white p-8 shadow-[0_20px_60px_rgba(38,31,18,0.06)] md:p-10">
           <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr]">
@@ -186,7 +190,7 @@ export default function BeaconFrameworkPage() {
                 How FirstLight uses it
               </p>
               <h2 className="mt-4 text-4xl font-semibold tracking-tight">
-                The framework keeps builds focused.
+                Beacon keeps builds focused.
               </h2>
             </div>
 
@@ -194,15 +198,19 @@ export default function BeaconFrameworkPage() {
               {[
                 [
                   "Before building",
-                  "We define the user, problem, input, output, data source, and success criteria.",
+                  "We identify the signal, shape the concept, and check proof so we do not build the wrong thing.",
                 ],
                 [
                   "During the build",
-                  "We create a focused version that proves the core workflow before adding complexity.",
+                  "We use the blueprint to create the smallest useful version without drifting into unnecessary features.",
                 ],
                 [
-                  "After release",
-                  "We track real usage, collect feedback, and improve based on behaviour rather than guesswork.",
+                  "Before launch",
+                  "We add trust signals, clear user copy, analytics, and a controlled release plan.",
+                ],
+                [
+                  "After launch",
+                  "We learn from real user behaviour and scale only what proves useful.",
                 ],
               ].map(([title, text]) => (
                 <div key={title} className="rounded-2xl bg-[#fbfaf7] p-5">
@@ -217,77 +225,90 @@ export default function BeaconFrameworkPage() {
         </div>
       </section>
 
-      {/* EXAMPLE */}
       <section className="px-6 py-24">
         <div className="mx-auto max-w-6xl">
           <div className="mb-10 max-w-2xl">
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[#9a7624]">
-              Example
+              Examples
             </p>
             <h2 className="mt-4 text-4xl font-semibold tracking-tight">
-              QatarMatch AI through the Beacon Framework
+              Beacon in practice
             </h2>
           </div>
 
-          <div className="grid gap-5 md:grid-cols-3">
+          <div className="grid gap-5 md:grid-cols-2">
             <div className="rounded-3xl border border-[#eadfca] bg-white p-6">
               <p className="text-sm font-semibold text-[#9a7624]">
-                Definition
+                QatarMatch AI
               </p>
               <h3 className="mt-4 text-xl font-semibold">
-                Real estate lead conversion
+                AI real estate lead conversion engine
               </h3>
-              <p className="mt-3 text-sm leading-6 text-[#6b604d]">
-                The product was reframed from property search into an
-                AI-powered sales assistant for agencies.
-              </p>
+              <div className="mt-5 grid gap-3 text-sm leading-6 text-[#6b604d]">
+                <p>
+                  <span className="font-semibold text-[#18140d]">Signal:</span>{" "}
+                  agencies lose leads due to slow response and poor matching.
+                </p>
+                <p>
+                  <span className="font-semibold text-[#18140d]">Shape:</span>{" "}
+                  zero-browsing property decision engine.
+                </p>
+                <p>
+                  <span className="font-semibold text-[#18140d]">Trust:</span>{" "}
+                  QatarMatch Score™, explanations, images, and clear handoff.
+                </p>
+                <p>
+                  <span className="font-semibold text-[#18140d]">Launch:</span>{" "}
+                  QSTP showcase-ready live demo.
+                </p>
+              </div>
             </div>
 
             <div className="rounded-3xl border border-[#eadfca] bg-white p-6">
               <p className="text-sm font-semibold text-[#9a7624]">
-                Launch Release
+                OnlyLids
               </p>
               <h3 className="mt-4 text-xl font-semibold">
-                Working V1 deployed
+                Unofficial fan companion and playlist builder
               </h3>
-              <p className="mt-3 text-sm leading-6 text-[#6b604d]">
-                Users can ask, receive top matches, submit details, and trigger
-                a WhatsApp viewing request.
-              </p>
-            </div>
-
-            <div className="rounded-3xl border border-[#eadfca] bg-white p-6">
-              <p className="text-sm font-semibold text-[#9a7624]">
-                Production Trial
-              </p>
-              <h3 className="mt-4 text-xl font-semibold">
-                QSTP showcase testing
-              </h3>
-              <p className="mt-3 text-sm leading-6 text-[#6b604d]">
-                Analytics, demo feedback, and user behaviour will shape the V2
-                product brief.
-              </p>
+              <div className="mt-5 grid gap-3 text-sm leading-6 text-[#6b604d]">
+                <p>
+                  <span className="font-semibold text-[#18140d]">Signal:</span>{" "}
+                  fans struggle to navigate a large podcast archive.
+                </p>
+                <p>
+                  <span className="font-semibold text-[#18140d]">Shape:</span>{" "}
+                  Build My LidList guided recommendation flow.
+                </p>
+                <p>
+                  <span className="font-semibold text-[#18140d]">Trust:</span>{" "}
+                  clear unofficial disclaimer and public metadata only.
+                </p>
+                <p>
+                  <span className="font-semibold text-[#18140d]">Scale:</span>{" "}
+                  reusable content discovery template for podcasts and creators.
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA */}
       <section className="px-6 py-24">
         <div className="mx-auto max-w-4xl rounded-[2rem] border border-[#eadfca] bg-[#18140d] p-10 text-center text-white shadow-[0_20px_60px_rgba(38,31,18,0.16)]">
           <h2 className="text-4xl font-semibold tracking-tight">
-            Have an idea that needs structure?
+            Have an idea with a signal?
           </h2>
           <p className="mx-auto mt-5 max-w-2xl leading-7 text-white/70">
-            Submit the idea and FirstLight AI will shape it through the Beacon
-            Framework — from vague concept to buildable product.
+            Submit a Beacon Brief and FirstLight AI will shape it into a
+            buildable product path.
           </p>
 
           <a
             href="/#submit"
             className="mt-8 inline-flex rounded-2xl bg-[#BA7517] px-7 py-4 font-semibold text-white transition hover:bg-[#9f6112]"
           >
-            Submit an idea
+            Submit Beacon Brief
           </a>
         </div>
       </section>
