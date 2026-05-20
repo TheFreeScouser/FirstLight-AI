@@ -90,8 +90,7 @@ function handleSubmit() {
           </div>
 
           <div className="mt-10 text-sm text-[#7a6c53]">
-            Built for founders, operators, and teams who need AI tools that
-            actually work.
+            Built for founders, operators, and teams who need practical AI tools that move from idea to live product.
           </div>
         </div>
       </section>
@@ -116,101 +115,130 @@ function handleSubmit() {
       </section>
 
       {/* FEATURED WORK */}
-      <section id="work" className="px-6 py-24">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-10 max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[#9a7624]">
-              Featured work
-            </p>
-            <h2 className="mt-4 text-4xl font-semibold tracking-tight md:text-5xl">
-              QatarMatch AI
-            </h2>
-            <p className="mt-5 text-lg leading-8 text-[#5f5442]">
-              A zero-browsing property decision engine for Qatar agencies. Users
-              ask for what they want, get instant matches, and submit viewing
-              requests through WhatsApp.
-            </p>
+<section id="work" className="px-6 py-24">
+  <div className="mx-auto max-w-6xl">
+    <div className="mb-12 max-w-2xl">
+      <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[#9a7624]">
+        Featured work
+      </p>
+      <h2 className="mt-4 text-4xl font-semibold tracking-tight md:text-5xl">
+        Live builds from FirstLight AI
+      </h2>
+      <p className="mt-5 text-lg leading-8 text-[#5f5442]">
+        Practical AI tools built around real use cases — from lead conversion
+        to content discovery.
+      </p>
+    </div>
+
+    <div className="grid gap-8 lg:grid-cols-2">
+      {/* QatarMatch AI */}
+      <div className="rounded-[2rem] border border-[#eadfca] bg-white p-8 shadow-[0_20px_60px_rgba(38,31,18,0.06)] transition hover:-translate-y-1 hover:shadow-lg">
+        <p className="text-sm font-medium text-[#9a7624]">
+          Featured Build #1
+        </p>
+
+        <h3 className="mt-3 text-3xl font-semibold">
+          QatarMatch AI
+        </h3>
+
+        <p className="mt-4 text-sm font-semibold uppercase tracking-[0.18em] text-[#8a7a5a]">
+          Real estate lead conversion engine
+        </p>
+
+        <p className="mt-5 leading-7 text-[#6b604d]">
+          A zero-browsing property decision engine for Qatar agencies. Users ask
+          for what they want, receive ranked matches with reasoning, submit a
+          viewing request, and trigger a structured WhatsApp lead.
+        </p>
+
+        <div className="mt-8 grid gap-3 rounded-3xl bg-[#fbfaf7] p-5 text-sm text-[#6b604d]">
+          <div>
+            <span className="font-semibold text-[#18140d]">Problem:</span>{" "}
+            Agencies lose leads through slow response and poor matching.
           </div>
-
-          <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
-            <div className="rounded-[2rem] border border-[#eadfca] bg-white p-8 shadow-[0_20px_60px_rgba(38,31,18,0.06)] transition hover:-translate-y-1 hover:shadow-lg">
-              <p className="text-sm font-medium text-[#9a7624]">
-                Live product
-              </p>
-              <h3 className="mt-3 text-3xl font-semibold">
-                Search → Match → Capture → WhatsApp
-              </h3>
-              <p className="mt-5 leading-7 text-[#6b604d]">
-                Built to solve a specific problem: real estate agencies losing
-                leads due to slow response and poor matching.
-              </p>
-              <p className="mt-4 leading-7 text-[#6b604d]">
-                Result: a fast, search-first system that captures qualified
-                leads and pushes them directly to WhatsApp.
-              </p>
-
-              <div className="mt-8 grid gap-3 rounded-3xl bg-[#fbfaf7] p-5 text-sm text-[#6b604d]">
-                <div>
-                  <span className="font-semibold text-[#18140d]">Problem:</span>{" "}
-                  Agencies lose leads through slow response.
-                </div>
-                <div>
-                  <span className="font-semibold text-[#18140d]">Solution:</span>{" "}
-                  Instant AI matching + lead capture.
-                </div>
-                <div>
-                  <span className="font-semibold text-[#18140d]">Outcome:</span>{" "}
-                  Faster response and higher-quality viewing requests.
-                </div>
-              </div>
-
-              <a
-                href="https://qatarmatch-ai.vercel.app/"
-                target="_blank"
-                rel="noreferrer"
-                className="mt-8 inline-flex rounded-2xl bg-[#18140d] px-6 py-3 font-semibold text-white transition hover:bg-[#3a3022]"
-              >
-                Try live demo
-              </a>
-            </div>
-
-            <div className="rounded-[2rem] border border-[#eadfca] bg-[#fffdf8] p-6 shadow-[0_20px_60px_rgba(38,31,18,0.06)] transition hover:-translate-y-1 hover:shadow-lg">
-              <div className="rounded-2xl border border-[#eadfca] bg-white p-5">
-                <p className="text-sm text-[#6b604d]">Example request</p>
-                <p className="mt-2 rounded-xl bg-[#fbfaf7] p-4 text-sm font-medium">
-                  “2-bed in Lusail under 9k near schools furnished”
-                </p>
-              </div>
-
-              <div className="mt-5 space-y-3">
-                {[
-                  ["#1", "Modern 2BR Marina Apartment", "96% match"],
-                  ["#2", "Spacious Family 2BR Lusail", "92% match"],
-                  ["#3", "2BR Apartment Near Schools", "89% match"],
-                ].map(([rank, title, score]) => (
-                  <div
-                    key={title}
-                    className="flex items-center justify-between rounded-2xl border border-[#eadfca] bg-white p-5 transition hover:border-[#d4af37]"
-                  >
-                    <div>
-                      <p className="text-sm font-semibold text-[#9a7624]">
-                        {rank} · {score}
-                      </p>
-                      <h4 className="mt-1 font-semibold">{title}</h4>
-                      <p className="mt-1 text-sm text-[#6b604d]">
-                        Matched on budget, location and viewing intent.
-                      </p>
-                    </div>
-                    <div className="hidden rounded-full bg-[#fbf3da] px-3 py-1 text-sm font-semibold text-[#9a7624] sm:block">
-                      Book
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div>
+            <span className="font-semibold text-[#18140d]">Solution:</span>{" "}
+            AI matching, QatarMatch Score™, lead capture, and WhatsApp handoff.
+          </div>
+          <div>
+            <span className="font-semibold text-[#18140d]">Beacon stage:</span>{" "}
+            B6 Launch / B7 Learn
           </div>
         </div>
-      </section>
+
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <a
+            href="https://qatarmatch-ai.vercel.app/"
+            target="_blank"
+            rel="noreferrer"
+            className="rounded-2xl bg-[#18140d] px-6 py-3 text-center font-semibold text-white transition hover:bg-[#3a3022]"
+          >
+            Try live demo
+          </a>
+          <a
+            href="/beacon-framework"
+            className="rounded-2xl border border-[#d8c99f] px-6 py-3 text-center font-semibold text-[#18140d] transition hover:border-[#d4af37]"
+          >
+            View framework
+          </a>
+        </div>
+      </div>
+
+      {/* OnlyLids */}
+      <div className="rounded-[2rem] border border-[#eadfca] bg-white p-8 shadow-[0_20px_60px_rgba(38,31,18,0.06)] transition hover:-translate-y-1 hover:shadow-lg">
+        <p className="text-sm font-medium text-[#9a7624]">
+          Featured Build #2
+        </p>
+
+        <h3 className="mt-3 text-3xl font-semibold">
+          OnlyLids
+        </h3>
+
+        <p className="mt-4 text-sm font-semibold uppercase tracking-[0.18em] text-[#8a7a5a]">
+          Unofficial podcast discovery companion
+        </p>
+
+        <p className="mt-5 leading-7 text-[#6b604d]">
+          An unofficial fan-built recommendation tool that helps Have A Word
+          fans find episodes, guests and playlists based on mood, time
+          available, and public YouTube engagement.
+        </p>
+
+        <div className="mt-8 grid gap-3 rounded-3xl bg-[#fbfaf7] p-5 text-sm text-[#6b604d]">
+          <div>
+            <span className="font-semibold text-[#18140d]">Problem:</span>{" "}
+            Fans struggle to navigate a large long-form podcast archive.
+          </div>
+          <div>
+            <span className="font-semibold text-[#18140d]">Solution:</span>{" "}
+            Build My LidList, LidScore, mood tags, and YouTube-linked picks.
+          </div>
+          <div>
+            <span className="font-semibold text-[#18140d]">Beacon stage:</span>{" "}
+            B4 Build / B5 Trust
+          </div>
+        </div>
+
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <a
+            href="https://onlylids.vercel.app/"
+            target="_blank"
+            rel="noreferrer"
+            className="rounded-2xl bg-[#18140d] px-6 py-3 text-center font-semibold text-white transition hover:bg-[#3a3022]"
+          >
+            Try live demo
+          </a>
+          <a
+            href="/beacon-framework"
+            className="rounded-2xl border border-[#d8c99f] px-6 py-3 text-center font-semibold text-[#18140d] transition hover:border-[#d4af37]"
+          >
+            View framework
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* PROCESS */}
       <section id="process" className="px-6 py-24">
