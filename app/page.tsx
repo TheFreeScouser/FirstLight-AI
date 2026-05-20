@@ -85,7 +85,7 @@ function handleSubmit() {
               rel="noreferrer"
               className="rounded-2xl border border-[#d8c99f] bg-white/70 px-7 py-4 font-semibold text-[#18140d] transition hover:border-[#d4af37]"
             >
-              View QatarMatch AI
+              View our work
             </a>
           </div>
 
@@ -249,14 +249,12 @@ function handleSubmit() {
         <div className="mx-auto grid max-w-6xl gap-10 rounded-[2rem] border border-[#eadfca] bg-white p-8 shadow-[0_20px_60px_rgba(38,31,18,0.06)] lg:grid-cols-[0.9fr_1.1fr]">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[#9a7624]">
-              Submit an idea
+              Beacon Brief
             </p>
-            <h2 className="mt-4 text-4xl font-semibold tracking-tight">
-              Have a workflow worth building?
-            </h2>
+            <h2 className="mt-4 text-4xl font-semibold tracking-tight">Submit an idea through the Beacon Framework.</h2>
             <p className="mt-5 leading-7 text-[#6b604d]">
-              Share the problem, what the user inputs, and what the system
-              should return. I’ll use that to shape a buildable AI product.
+              FirstLight AI uses Beacon v2 to turn messy ideas into structured AI builds —
+              from signal, to shape, to proof, to build, launch and scale.
             </p>
           </div>
 
@@ -266,7 +264,8 @@ function handleSubmit() {
   onSubmit={handleSubmit}
   className="grid gap-4"
 >
-            <input
+
+<input
   name="name"
   className="rounded-2xl border border-[#d8c99f] p-4 outline-none transition focus:border-[#d4af37]"
   placeholder="Name"
@@ -279,27 +278,70 @@ function handleSubmit() {
   placeholder="Email"
 />
 
+<input
+  name="project_name"
+  className="rounded-2xl border border-[#d8c99f] p-4 outline-none transition focus:border-[#d4af37]"
+  placeholder="Project / idea name"
+/>
+
 <textarea
-  name="idea"
+  name="b0_signal"
+  className="min-h-24 rounded-2xl border border-[#d8c99f] p-4 outline-none transition focus:border-[#d4af37]"
+  placeholder="B0 Signal — What sparked this idea? What problem or opportunity have you noticed?"
+/>
+
+<textarea
+  name="b1_shape"
+  className="min-h-24 rounded-2xl border border-[#d8c99f] p-4 outline-none transition focus:border-[#d4af37]"
+  placeholder="B1 Shape — Who is the user? What should the simplest useful version do?"
+/>
+
+<textarea
+  name="b2_proof"
+  className="min-h-24 rounded-2xl border border-[#d8c99f] p-4 outline-none transition focus:border-[#d4af37]"
+  placeholder="B2 Proof — Has anyone asked for this? What would prove people care?"
+/>
+
+<textarea
+  name="b3_blueprint"
   className="min-h-28 rounded-2xl border border-[#d8c99f] p-4 outline-none transition focus:border-[#d4af37]"
-  placeholder="Describe the idea or problem"
+  placeholder="B3 Blueprint — What does the user input, what should the system return, and what data is needed?"
 />
 
 <textarea
-  name="user_input"
+  name="b4_build"
   className="min-h-24 rounded-2xl border border-[#d8c99f] p-4 outline-none transition focus:border-[#d4af37]"
-  placeholder="What does the user input?"
+  placeholder="B4 Build — What must V1 include, and what should wait until later?"
 />
 
 <textarea
-  name="expected_output"
+  name="b5_trust"
   className="min-h-24 rounded-2xl border border-[#d8c99f] p-4 outline-none transition focus:border-[#d4af37]"
-  placeholder="What should the system return?"
+  placeholder="B5 Trust — What could make users doubt this? What trust signals, privacy notes, or disclaimers are needed?"
 />
 
-            <button className="rounded-2xl bg-[#18140d] px-6 py-4 font-semibold text-white transition hover:bg-[#3a3022]">
-              {submitted ? "Idea received" : "Submit idea"}
-            </button>
+<textarea
+  name="b6_launch"
+  className="min-h-24 rounded-2xl border border-[#d8c99f] p-4 outline-none transition focus:border-[#d4af37]"
+  placeholder="B6 Launch — Who should test the first live version, and where would it be shared?"
+/>
+
+<textarea
+  name="b7_learn"
+  className="min-h-24 rounded-2xl border border-[#d8c99f] p-4 outline-none transition focus:border-[#d4af37]"
+  placeholder="B7 Learn — What feedback or behaviour should we track?"
+/>
+
+<textarea
+  name="b8_scale"
+  className="min-h-24 rounded-2xl border border-[#d8c99f] p-4 outline-none transition focus:border-[#d4af37]"
+  placeholder="B8 Scale — If it works, who would pay for it and what could it become?"
+/>
+
+<button className="rounded-2xl bg-[#18140d] px-6 py-4 font-semibold text-white transition hover:bg-[#3a3022]">
+{submitted ? "Idea received" : "Submit idea"}
+</button>
+
           </form>
         </div>
       </section>
