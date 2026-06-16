@@ -323,7 +323,7 @@ function handleSubmit() {
           </div>
 
           <form
-  action="https://formspree.io/f/mjglwzya"
+  action="https://formspree.io/f/xgobqnbn"
   method="POST"
   onSubmit={handleSubmit}
   className="grid gap-4"
