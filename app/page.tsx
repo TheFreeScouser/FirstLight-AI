@@ -279,11 +279,47 @@ function handleSubmit() {
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[#9a7624]">
               Beacon Brief
             </p>
-            <h2 className="mt-4 text-4xl font-semibold tracking-tight">Submit an idea through the Beacon Framework.</h2>
+
+            <h2 className="mt-4 text-4xl font-semibold tracking-tight">
+              Submit an idea through the Beacon Framework.
+            </h2>
+
             <p className="mt-5 leading-7 text-[#6b604d]">
               FirstLight AI uses Beacon v2 to turn messy ideas into structured AI builds —
               from signal, to shape, to proof, to build, launch and scale.
             </p>
+
+            <div className="mt-6 rounded-2xl bg-[#fbfaf7] p-5 text-sm leading-6 text-[#6b604d]">
+              <p>
+                <span className="font-semibold text-[#18140d]">General enquiries:</span>{" "}
+                <a
+                  href="mailto:hello@firstlightai.co.uk"
+                  className="text-[#9a7624] hover:underline"
+                >
+                  hello@firstlightai.co.uk
+                </a>
+              </p>
+
+              <p className="mt-2">
+                <span className="font-semibold text-[#18140d]">Billing:</span>{" "}
+                <a
+                  href="mailto:billing@firstlightai.co.uk"
+                  className="text-[#9a7624] hover:underline"
+                >
+                  billing@firstlightai.co.uk
+                </a>
+              </p>
+
+              <p className="mt-2">
+                <span className="font-semibold text-[#18140d]">Support:</span>{" "}
+                <a
+                  href="mailto:support@firstlightai.co.uk"
+                  className="text-[#9a7624] hover:underline"
+                >
+                  support@firstlightai.co.uk
+                </a>
+              </p>
+            </div>
           </div>
 
           <form
@@ -367,7 +403,7 @@ function handleSubmit() {
 />
 
 <button className="rounded-2xl bg-[#18140d] px-6 py-4 font-semibold text-white transition hover:bg-[#3a3022]">
-{submitted ? "Idea received" : "Submit idea"}
+  {submitted ? "Beacon brief received" : "Submit Beacon Brief"}
 </button>
 
           </form>
@@ -389,10 +425,10 @@ function handleSubmit() {
             </a>
 
             <a
-              href="ryanfleming@flemingengineers.com"
+              href="mailto:hello@firstlightai.co.uk"
               className="hover:text-[#9a7624]"
             >
-              Email
+              hello@firstlightai.co.uk
             </a>
             <a href="/beacon-framework" className="hover:text-[#9a7624]">
               Beacon Framework
