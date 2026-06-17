@@ -1,25 +1,20 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://firstlightai.co.uk"),
   title: {
-    default: "FirstLight AI | AI Automation Consultancy UK",
+    default: "FirstLight AI | Practical AI Systems for Messy Workflows",
     template: "%s | FirstLight AI",
   },
   description:
-    "FirstLight AI helps UK businesses reduce admin, clean up messy workflows and build practical AI automation systems. Based in Liverpool.",
+    "FirstLight AI helps UK businesses simplify messy workflows, reduce repeated admin, improve data flow and build useful AI automation systems. Based in Liverpool.",
   keywords: [
     "FirstLight AI",
     "AI automation consultancy UK",
@@ -28,15 +23,16 @@ export const metadata: Metadata = {
     "business process automation",
     "practical AI systems",
     "admin automation",
-    "AI agency UK",
+    "CRM automation",
+    "AI workflow audit",
   ],
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "FirstLight AI | AI Automation Consultancy UK",
+    title: "FirstLight AI | Clean Process First. Useful AI Second.",
     description:
-      "Practical AI systems for clearer businesses. Reduce admin, clean up messy workflows and automate the work that slows teams down.",
+      "Practical AI systems for small teams with messy workflows. Simplify admin, improve data flow and apply useful AI only where it removes friction.",
     url: "https://firstlightai.co.uk",
     siteName: "FirstLight AI",
     locale: "en_GB",
@@ -44,9 +40,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "FirstLight AI | AI Automation Consultancy UK",
+    title: "FirstLight AI | Clean Process First. Useful AI Second.",
     description:
-      "FirstLight AI helps UK businesses reduce admin, improve workflows and build practical AI automation systems.",
+      "FirstLight AI helps UK businesses simplify messy workflows and build useful AI automation systems.",
   },
   robots: {
     index: true,
@@ -73,7 +69,7 @@ const organizationJsonLd = {
   },
   areaServed: "United Kingdom",
   description:
-    "FirstLight AI helps UK businesses reduce admin, clean up messy workflows and build practical AI automation systems.",
+    "FirstLight AI helps UK businesses simplify messy workflows, reduce repeated admin, improve data flow and build useful AI automation systems.",
 };
 
 export default function RootLayout({
@@ -82,10 +78,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
+    <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <script
           type="application/ld+json"
