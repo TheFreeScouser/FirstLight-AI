@@ -10,6 +10,8 @@ type Option = {
   base?: number;
 };
 
+type ViewMode = "consultant" | "client";
+
 const gbp = new Intl.NumberFormat("en-GB", {
   style: "currency",
   currency: "GBP",
@@ -179,6 +181,7 @@ const paceOptions = {
 } satisfies Record<string, Option>;
 
 export default function GuidedCosting() {
+  const [viewMode, setViewMode] = useState<ViewMode>("consultant");
   const [engagement, setEngagement] = useState<keyof typeof engagementOptions>("build");
   const [footprint, setFootprint] = useState<keyof typeof footprintOptions>("small");
   const [complexity, setComplexity] = useState<keyof typeof complexityOptions>("medium");
@@ -235,6 +238,14 @@ export default function GuidedCosting() {
       recommendedStep = "Focused AI Build";
     }
 
+    const clientReasons = [
+      `The workflow footprint is ${footprintOptions[footprint].label.toLowerCase()}.`,
+      `The process appears to be ${complexityOptions[complexity].label.toLowerCase()}.`,
+      `Data readiness is currently ${dataOptions[data].label.toLowerCase()}.`,
+      `Integration needs look ${integrationOptions[integrations].label.toLowerCase()}.`,
+      `The required pace is ${paceOptions[pace].label.toLowerCase()}.`,
+    ];
+
     return {
       rangeLow,
       rangeHigh,
@@ -242,7 +253,8 @@ export default function GuidedCosting() {
       deposit: engagement === "retainer" ? rangeLow : Math.round((rangeLow * 0.4) / 50) * 50,
       confidence,
       recommendedStep,
-      reasons: [
+      clientReasons,
+      internalReasons: [
         footprintOptions[footprint].label,
         complexityOptions[complexity].label,
         `${dataOptions[data].label} data readiness`,
@@ -260,82 +272,237 @@ export default function GuidedCosting() {
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[#BA7517]">FirstLight OS</p>
             <h1 className="mt-2 text-4xl font-semibold tracking-tight">Guided costing demo</h1>
             <p className="mt-3 max-w-2xl leading-7 text-[#6B604D]">
-              A client-facing scoping guide for pricing the workflow, not the buzzword.
+              Use Consultant View while scoping, then switch to Client View for a clean recommendation.
             </p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
+            <div className="rounded-full border border-[#D8C99F] bg-white p-1 shadow-sm">
+              <button
+                onClick={() => setViewMode("consultant")}
+                className={`rounded-full px-4 py-2 text-sm font-semibold transition ${viewMode === "consultant" ? "bg-[#18140D] text-white" : "text-[#6B604D] hover:text-[#18140D]"}`}
+              >
+                Consultant View
+              </button>
+              <button
+                onClick={() => setViewMode("client")}
+                className={`rounded-full px-4 py-2 text-sm font-semibold transition ${viewMode === "client" ? "bg-[#BA7517] text-white" : "text-[#6B604D] hover:text-[#18140D]"}`}
+              >
+                Client View
+              </button>
+            </div>
             <a href="/admin" className="rounded-full border border-[#D8C99F] px-4 py-2 text-sm font-semibold hover:border-[#BA7517]">Back to OS</a>
             <a href="/" className="rounded-full bg-[#18140D] px-4 py-2 text-sm font-semibold text-white hover:bg-[#BA7517]">View website</a>
           </div>
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
-          <section className="rounded-[2rem] bg-[#18140D] p-8 text-white shadow-[0_30px_80px_rgba(24,20,13,0.18)]">
-            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[#D4AF37]">Result</p>
-            <h2 className="mt-4 text-4xl font-semibold tracking-tight">Show the sensible starting point.</h2>
-            <p className="mt-5 leading-7 text-white/70">
-              This is not a quote generator. It is a scoping guide. Use it live on a call to explain why a project should start with an Audit, Blueprint, Build or Retainer.
-            </p>
-
-            <div className="mt-8 rounded-[2rem] bg-white p-6 text-[#18140D]">
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#BA7517]">Recommended start</p>
-              <p className="mt-3 text-4xl font-semibold">{estimate.recommendedStep}</p>
-
-              <p className="mt-6 text-sm font-semibold uppercase tracking-[0.2em] text-[#BA7517]">Estimated range</p>
-              <p className="mt-3 text-5xl font-semibold">{gbp.format(estimate.rangeLow)}-{gbp.format(estimate.rangeHigh)}</p>
-
-              <div className="mt-6 grid gap-3 text-sm text-[#6B604D]">
-                <p><span className="font-semibold text-[#18140D]">Commercial floor:</span> {gbp.format(estimate.commercialFloor)}</p>
-                <p><span className="font-semibold text-[#18140D]">Suggested deposit:</span> {gbp.format(estimate.deposit)}</p>
-                <p><span className="font-semibold text-[#18140D]">Confidence:</span> {estimate.confidence}</p>
-              </div>
-
-              <div className="mt-6 flex flex-wrap gap-2">
-                {estimate.reasons.map((reason) => (
-                  <span key={reason} className="rounded-full bg-[#FBFAF7] px-3 py-1 text-xs font-semibold text-[#6B604D]">
-                    {reason}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.05] p-5 text-sm leading-6 text-white/70">
-              <p className="font-semibold text-white">Demo script</p>
-              <p className="mt-3">
-                I price this by walking through the workflow footprint, complexity, data readiness, integrations and pace. That shows whether we should start with an Audit, Blueprint or Build.
-              </p>
-            </div>
-          </section>
-
-          <section className="grid gap-4 md:grid-cols-2">
-            <SelectField label="1. Engagement being scoped" value={engagement} onChange={(value) => setEngagement(value as keyof typeof engagementOptions)} options={engagementOptions} />
-            <SelectField label="2. Workflow footprint" value={footprint} onChange={(value) => setFootprint(value as keyof typeof footprintOptions)} options={footprintOptions} />
-            <SelectField label="3. Process complexity" value={complexity} onChange={(value) => setComplexity(value as keyof typeof complexityOptions)} options={complexityOptions} />
-            <SelectField label="4. Data readiness" value={data} onChange={(value) => setData(value as keyof typeof dataOptions)} options={dataOptions} />
-            <SelectField label="5. Integration needs" value={integrations} onChange={(value) => setIntegrations(value as keyof typeof integrationOptions)} options={integrationOptions} />
-            <SelectField label="6. Delivery pace" value={pace} onChange={(value) => setPace(value as keyof typeof paceOptions)} options={paceOptions} />
-
-            <label className="grid gap-2 rounded-[2rem] border border-[#EADFCA] bg-white p-5 text-sm font-semibold shadow-[0_15px_50px_rgba(38,31,18,0.05)] md:col-span-2">
-              Support months
-              <input
-                type="number"
-                min="0"
-                value={supportMonths}
-                onChange={(event) => setSupportMonths(event.target.value)}
-                className="rounded-2xl border border-[#D8C99F] bg-[#FBFAF7] p-4 font-normal outline-none focus:border-[#D4AF37]"
-              />
-            </label>
-
-            <div className="rounded-[2rem] border border-[#EADFCA] bg-white p-6 text-sm leading-6 text-[#6B604D] shadow-[0_15px_50px_rgba(38,31,18,0.05)] md:col-span-2">
-              <p className="font-semibold text-[#18140D]">Proposal wording</p>
-              <p className="mt-3">
-                Recommended starting point: {estimate.recommendedStep}. Estimated range: {gbp.format(estimate.rangeLow)}-{gbp.format(estimate.rangeHigh)}. This is based on {footprintOptions[footprint].label.toLowerCase()}, {complexityOptions[complexity].label.toLowerCase()}, {dataOptions[data].label.toLowerCase()} data readiness, {integrationOptions[integrations].label.toLowerCase()} integrations and {paceOptions[pace].label.toLowerCase()} delivery pace.
-              </p>
-            </div>
-          </section>
-        </div>
+        {viewMode === "consultant" ? (
+          <ConsultantView
+            engagement={engagement}
+            setEngagement={setEngagement}
+            footprint={footprint}
+            setFootprint={setFootprint}
+            complexity={complexity}
+            setComplexity={setComplexity}
+            data={data}
+            setData={setData}
+            integrations={integrations}
+            setIntegrations={setIntegrations}
+            pace={pace}
+            setPace={setPace}
+            supportMonths={supportMonths}
+            setSupportMonths={setSupportMonths}
+            estimate={estimate}
+          />
+        ) : (
+          <ClientView estimate={estimate} />
+        )}
       </div>
     </main>
+  );
+}
+
+function ConsultantView({
+  engagement,
+  setEngagement,
+  footprint,
+  setFootprint,
+  complexity,
+  setComplexity,
+  data,
+  setData,
+  integrations,
+  setIntegrations,
+  pace,
+  setPace,
+  supportMonths,
+  setSupportMonths,
+  estimate,
+}: {
+  engagement: keyof typeof engagementOptions;
+  setEngagement: (value: keyof typeof engagementOptions) => void;
+  footprint: keyof typeof footprintOptions;
+  setFootprint: (value: keyof typeof footprintOptions) => void;
+  complexity: keyof typeof complexityOptions;
+  setComplexity: (value: keyof typeof complexityOptions) => void;
+  data: keyof typeof dataOptions;
+  setData: (value: keyof typeof dataOptions) => void;
+  integrations: keyof typeof integrationOptions;
+  setIntegrations: (value: keyof typeof integrationOptions) => void;
+  pace: keyof typeof paceOptions;
+  setPace: (value: keyof typeof paceOptions) => void;
+  supportMonths: string;
+  setSupportMonths: (value: string) => void;
+  estimate: {
+    rangeLow: number;
+    rangeHigh: number;
+    commercialFloor: number;
+    deposit: number;
+    confidence: string;
+    recommendedStep: string;
+    internalReasons: string[];
+  };
+}) {
+  return (
+    <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+      <section className="rounded-[2rem] bg-[#18140D] p-8 text-white shadow-[0_30px_80px_rgba(24,20,13,0.18)]">
+        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[#D4AF37]">Consultant View</p>
+        <h2 className="mt-4 text-4xl font-semibold tracking-tight">Price the workflow, not the buzzword.</h2>
+        <p className="mt-5 leading-7 text-white/70">
+          This view shows the internal scoping logic, commercial floor and confidence level. Use it while asking questions.
+        </p>
+
+        <div className="mt-8 rounded-[2rem] bg-white p-6 text-[#18140D]">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#BA7517]">Recommended start</p>
+          <p className="mt-3 text-4xl font-semibold">{estimate.recommendedStep}</p>
+
+          <p className="mt-6 text-sm font-semibold uppercase tracking-[0.2em] text-[#BA7517]">Estimated range</p>
+          <p className="mt-3 text-5xl font-semibold">{gbp.format(estimate.rangeLow)}-{gbp.format(estimate.rangeHigh)}</p>
+
+          <div className="mt-6 grid gap-3 text-sm text-[#6B604D]">
+            <p><span className="font-semibold text-[#18140D]">Commercial floor:</span> {gbp.format(estimate.commercialFloor)}</p>
+            <p><span className="font-semibold text-[#18140D]">Suggested deposit:</span> {gbp.format(estimate.deposit)}</p>
+            <p><span className="font-semibold text-[#18140D]">Confidence:</span> {estimate.confidence}</p>
+          </div>
+
+          <div className="mt-6 flex flex-wrap gap-2">
+            {estimate.internalReasons.map((reason) => (
+              <span key={reason} className="rounded-full bg-[#FBFAF7] px-3 py-1 text-xs font-semibold text-[#6B604D]">
+                {reason}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.05] p-5 text-sm leading-6 text-white/70">
+          <p className="font-semibold text-white">Demo script</p>
+          <p className="mt-3">
+            I price this by walking through the workflow footprint, complexity, data readiness, integrations and pace. That shows whether we should start with an Audit, Blueprint or Build.
+          </p>
+        </div>
+      </section>
+
+      <section className="grid gap-4 md:grid-cols-2">
+        <SelectField label="1. Engagement being scoped" value={engagement} onChange={(value) => setEngagement(value as keyof typeof engagementOptions)} options={engagementOptions} />
+        <SelectField label="2. Workflow footprint" value={footprint} onChange={(value) => setFootprint(value as keyof typeof footprintOptions)} options={footprintOptions} />
+        <SelectField label="3. Process complexity" value={complexity} onChange={(value) => setComplexity(value as keyof typeof complexityOptions)} options={complexityOptions} />
+        <SelectField label="4. Data readiness" value={data} onChange={(value) => setData(value as keyof typeof dataOptions)} options={dataOptions} />
+        <SelectField label="5. Integration needs" value={integrations} onChange={(value) => setIntegrations(value as keyof typeof integrationOptions)} options={integrationOptions} />
+        <SelectField label="6. Delivery pace" value={pace} onChange={(value) => setPace(value as keyof typeof paceOptions)} options={paceOptions} />
+
+        <label className="grid gap-2 rounded-[2rem] border border-[#EADFCA] bg-white p-5 text-sm font-semibold shadow-[0_15px_50px_rgba(38,31,18,0.05)] md:col-span-2">
+          Support months
+          <input
+            type="number"
+            min="0"
+            value={supportMonths}
+            onChange={(event) => setSupportMonths(event.target.value)}
+            className="rounded-2xl border border-[#D8C99F] bg-[#FBFAF7] p-4 font-normal outline-none focus:border-[#D4AF37]"
+          />
+        </label>
+      </section>
+    </div>
+  );
+}
+
+function ClientView({
+  estimate,
+}: {
+  estimate: {
+    rangeLow: number;
+    rangeHigh: number;
+    deposit: number;
+    recommendedStep: string;
+    clientReasons: string[];
+  };
+}) {
+  return (
+    <section className="mx-auto max-w-5xl rounded-[2rem] border border-[#EADFCA] bg-white p-8 shadow-[0_25px_80px_rgba(38,31,18,0.08)] md:p-12">
+      <div className="flex flex-col justify-between gap-6 border-b border-[#EADFCA] pb-8 md:flex-row md:items-start">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[#BA7517]">FirstLight AI</p>
+          <h2 className="mt-3 text-4xl font-semibold tracking-tight md:text-5xl">Clean process first. Useful AI second.</h2>
+          <p className="mt-5 max-w-2xl leading-7 text-[#6B604D]">
+            Based on what we have discussed, this is the sensible starting point for simplifying the workflow and applying useful AI or automation safely.
+          </p>
+        </div>
+        <div className="rounded-2xl bg-[#18140D] px-5 py-4 text-white">
+          <p className="text-xs uppercase tracking-[0.2em] text-[#D4AF37]">Recommendation</p>
+          <p className="mt-2 text-xl font-semibold">{estimate.recommendedStep}</p>
+        </div>
+      </div>
+
+      <div className="mt-8 grid gap-6 md:grid-cols-2">
+        <div className="rounded-[2rem] bg-[#FBFAF7] p-6">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#BA7517]">Indicative range</p>
+          <p className="mt-3 text-4xl font-semibold">{gbp.format(estimate.rangeLow)}-{gbp.format(estimate.rangeHigh)}</p>
+          <p className="mt-4 text-sm leading-6 text-[#6B604D]">
+            This is an indicative range based on the current understanding of the workflow. A final proposal may change once the process, data and access requirements are confirmed.
+          </p>
+        </div>
+
+        <div className="rounded-[2rem] bg-[#FBFAF7] p-6">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#BA7517]">Suggested next step</p>
+          <p className="mt-3 text-3xl font-semibold">Confirm scope</p>
+          <p className="mt-4 text-sm leading-6 text-[#6B604D]">
+            The next step is to confirm the workflow, agree what V1 should include and identify what data or system access is needed.
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-8 rounded-[2rem] border border-[#EADFCA] p-6">
+        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#BA7517]">Why this route</p>
+        <ul className="mt-5 grid gap-3 text-[#6B604D] md:grid-cols-2">
+          {estimate.clientReasons.map((reason) => (
+            <li key={reason} className="flex gap-3 rounded-2xl bg-[#FBFAF7] p-4">
+              <span className="mt-1 text-[#BA7517]">✦</span>
+              <span>{reason}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="mt-8 grid gap-6 md:grid-cols-3">
+        <ClientStep title="1. Map" text="Clarify the workflow, people, systems, handovers and repeated admin." />
+        <ClientStep title="2. Design" text="Define the useful first version, data needs, logic and risks." />
+        <ClientStep title="3. Build" text="Create or prepare the practical system once the process is clear." />
+      </div>
+
+      <div className="mt-8 rounded-[2rem] bg-[#18140D] p-6 text-white">
+        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#D4AF37]">What we need from you</p>
+        <p className="mt-4 leading-7 text-white/70">
+          Access to the current workflow, example documents or spreadsheets, the people who use the process, and quick feedback on the first draft of the scope.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+function ClientStep({ title, text }: { title: string; text: string }) {
+  return (
+    <div className="rounded-[2rem] border border-[#EADFCA] bg-[#FBFAF7] p-6">
+      <h3 className="text-xl font-semibold">{title}</h3>
+      <p className="mt-3 text-sm leading-6 text-[#6B604D]">{text}</p>
+    </div>
   );
 }
 
