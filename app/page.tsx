@@ -146,11 +146,9 @@ export default function FirstLightPage() {
             </div>
 
             <div className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#6B604D]">
-              <span>✓ Founder-led</span>
-              <span>•</span>
-              <span>Fast to move</span>
-              <span>•</span>
-              <span>Built for real business workflows</span>
+              <span>• Founder-led</span>
+              <span>• Fast to move</span>
+              <span>• Built for real business workflows</span>
             </div>
           </div>
 
@@ -179,7 +177,7 @@ export default function FirstLightPage() {
             Signs your workflow is costing you time, money and sanity
           </h2>
           <p className="mx-auto mt-4 max-w-2xl leading-7 text-[#6B604D]">
-            Most businesses do not need more AI tools. They need less mess, clearer ownership and better data flow.
+            Most businesses do not need more AI tools. They need simpler workflows, clearer ownership and better data flow.
           </p>
 
           <div className="mt-10 grid gap-4 md:grid-cols-3 lg:grid-cols-6">
