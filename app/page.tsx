@@ -55,6 +55,37 @@ const offers = [
   },
 ];
 
+const pricing = [
+  {
+    label: "Start here",
+    title: "Beacon Discovery & Blueprint",
+    price: "From £1,500",
+    text: "Understand the workflow, identify the highest-value opportunity and leave with a practical, buildable plan.",
+    includes: "Discovery session, process mapping, opportunity assessment and recommended roadmap.",
+  },
+  {
+    label: "Most common",
+    title: "Workflow Automation Project",
+    price: "Typically £2,500–£7,500",
+    text: "Improve one painful workflow with focused automation, better data flow and clearer handovers.",
+    includes: "Scoped design, implementation, testing, documentation and handover.",
+  },
+  {
+    label: "Larger builds",
+    title: "AI & Automation Systems",
+    price: "Quoted to scope",
+    text: "For more complex systems involving custom AI, multiple integrations, dashboards or internal tools.",
+    includes: "Fixed scope and pricing agreed before build begins.",
+  },
+  {
+    label: "Ongoing support",
+    title: "Managed Support",
+    price: "From £750/month",
+    text: "Ongoing optimisation, support and improvement for systems FirstLight has helped put in place.",
+    includes: "Monitoring, workflow improvements, small changes and regular review.",
+  },
+];
+
 const beaconSteps = [
   ["B0", "Signal", "Spot the real problem"],
   ["B1", "Shape", "Define the workflow"],
@@ -93,6 +124,7 @@ export default function FirstLightPage() {
 
           <nav className="hidden items-center gap-8 text-sm text-[#6B604D] md:flex">
             <a href="#services" className="hover:text-[#BA7517]">Services</a>
+            <a href="#pricing" className="hover:text-[#BA7517]">Pricing</a>
             <a href="#work" className="hover:text-[#BA7517]">Work</a>
             <a href="#beacon" className="hover:text-[#BA7517]">Beacon Framework</a>
             <a href="#about" className="hover:text-[#BA7517]">About</a>
@@ -138,10 +170,10 @@ export default function FirstLightPage() {
                 Book a 20-minute discovery call →
               </a>
               <a
-                href="#services"
+                href="#pricing"
                 className="rounded-2xl border border-[#D8C99F] bg-white/70 px-7 py-4 text-center font-semibold text-[#18140D] transition hover:border-[#BA7517]"
               >
-                See how we help
+                View pricing
               </a>
             </div>
 
@@ -237,8 +269,51 @@ export default function FirstLightPage() {
         </div>
       </section>
 
+      {/* PRICING */}
+      <section id="pricing" className="border-y border-[#EADFCA] bg-white/55 px-6 py-24">
+        <div className="mx-auto max-w-7xl">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[#BA7517]">Transparent pricing</p>
+            <h2 className="mt-4 text-4xl font-semibold tracking-tight md:text-5xl">
+              Know the ballpark before we talk.
+            </h2>
+            <p className="mt-5 text-lg leading-8 text-[#6B604D]">
+              No mystery pricing and no sales call just to discover whether we are in the same budget range. These are typical starting points; every project is scoped around the actual problem.
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-6 md:grid-cols-2">
+            {pricing.map((item) => (
+              <div key={item.title} className="rounded-[2rem] border border-[#EADFCA] bg-[#FBFAF7] p-8 shadow-[0_18px_55px_rgba(38,31,18,0.05)]">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#BA7517]">{item.label}</p>
+                <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <h3 className="text-2xl font-semibold">{item.title}</h3>
+                  <p className="shrink-0 text-lg font-semibold text-[#BA7517]">{item.price}</p>
+                </div>
+                <p className="mt-5 leading-7 text-[#6B604D]">{item.text}</p>
+                <div className="mt-6 rounded-2xl border border-[#EADFCA] bg-white p-5 text-sm leading-6 text-[#6B604D]">
+                  <span className="font-semibold text-[#18140D]">Typically includes:</span> {item.includes}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-10 rounded-[2rem] bg-[#18140D] p-8 text-white md:flex md:items-center md:justify-between md:gap-10">
+            <div className="max-w-3xl">
+              <h3 className="text-2xl font-semibold">Need a smaller starting point?</h3>
+              <p className="mt-3 leading-7 text-white/70">
+                A narrower pilot can often be scoped around one clear workflow and one measurable outcome. We will always agree the scope and a fixed price before work begins.
+              </p>
+            </div>
+            <a href="#contact" className="mt-6 inline-flex shrink-0 rounded-2xl bg-[#D4AF37] px-6 py-3 font-semibold text-[#18140D] transition hover:bg-white md:mt-0">
+              Discuss your workflow →
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* BEACON */}
-      <section id="beacon" className="px-6 pb-24">
+      <section id="beacon" className="px-6 pb-24 pt-24">
         <div className="mx-auto max-w-7xl rounded-[2rem] border border-[#EADFCA] bg-white p-8 shadow-[0_20px_60px_rgba(38,31,18,0.06)]">
           <div className="mx-auto max-w-3xl text-center">
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[#BA7517]">The Beacon Framework</p>
@@ -437,6 +512,9 @@ export default function FirstLightPage() {
           <div className="flex flex-wrap gap-6">
             <a href="https://www.linkedin.com/company/firstlightai/" target="_blank" rel="noreferrer" className="hover:text-[#BA7517]">
               LinkedIn
+            </a>
+            <a href="#pricing" className="hover:text-[#BA7517]">
+              Pricing
             </a>
             <a href="mailto:hello@firstlightai.co.uk" className="hover:text-[#BA7517]">
               hello@firstlightai.co.uk
