@@ -3,9 +3,11 @@ import { redirect } from "next/navigation";
 import GuidedCosting from "./GuidedCosting";
 
 export const metadata = {
-  title: "Guided Costing | FirstLight OS",
-  description: "Private guided scoping and costing tool for FirstLight AI.",
+  title: "Discovery Console | FirstLight OS",
+  description: "Private live discovery, scoping and costing console for FirstLight AI.",
 };
+
+export const dynamic = "force-dynamic";
 
 export default async function GuidedCostingPage() {
   const cookieStore = await cookies();
