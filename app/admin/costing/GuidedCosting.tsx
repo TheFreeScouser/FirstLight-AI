@@ -2,15 +2,11 @@
 
 import { useMemo, useState } from "react";
 
-type Option = {
-  label: string;
-  definition: string;
-  questions: string[];
-  multiplier?: number;
-  base?: number;
-};
-
 type ViewMode = "consultant" | "client";
+type Complexity = "low" | "medium" | "high" | "veryHigh";
+type DataReadiness = "clean" | "mixed" | "messy" | "unknown";
+type IntegrationLoad = "none" | "light" | "moderate" | "heavy";
+type Pace = "normal" | "soon" | "fast" | "critical";
 
 const gbp = new Intl.NumberFormat("en-GB", {
   style: "currency",
@@ -18,527 +14,409 @@ const gbp = new Intl.NumberFormat("en-GB", {
   maximumFractionDigits: 0,
 });
 
-const engagementOptions = {
-  audit: {
-    label: "Beacon Audit",
-    base: 750,
-    definition: "Best when the client knows the process is messy but does not yet know what to automate first.",
-    questions: ["Where does the workflow break?", "Who touches it?", "What is repeated manually?"],
-  },
-  blueprint: {
-    label: "Beacon Blueprint",
-    base: 1500,
-    definition: "Best when there is a clear problem, but the workflow, data and build requirements need structuring.",
-    questions: ["What does the user input?", "What should come back?", "What data is needed?"],
-  },
-  build: {
-    label: "Focused AI Build",
-    base: 3500,
-    definition: "Best when the workflow, outcome and first useful version are clear enough to build.",
-    questions: ["What must V1 do?", "What can wait?", "How will we test it?"],
-  },
-  retainer: {
-    label: "Support Retainer",
-    base: 950,
-    definition: "Best after launch when the client needs support, improvements and small changes each month.",
-    questions: ["What needs monitoring?", "How often will it change?", "Who raises support requests?"],
-  },
-} satisfies Record<string, Option>;
+const complexityLabels: Record<Complexity, string> = {
+  low: "Low",
+  medium: "Medium",
+  high: "High",
+  veryHigh: "Very high",
+};
 
-const footprintOptions = {
-  micro: {
-    label: "Micro workflow",
-    multiplier: 1,
-    definition: "1-3 users, one process owner and one simple workflow.",
-    questions: ["How many people touch this each week?", "Is there one clear owner?"],
-  },
-  small: {
-    label: "Small team workflow",
-    multiplier: 1.15,
-    definition: "4-15 users, one team and 1-3 tools or spreadsheets involved.",
-    questions: ["Which team owns this?", "How many tools does it pass through?"],
-  },
-  growing: {
-    label: "Growing SME workflow",
-    multiplier: 1.35,
-    definition: "16-50 users, multiple roles, several handovers and regular reporting pressure.",
-    questions: ["How many roles are involved?", "Where do handovers slow down?"],
-  },
-  opsHeavy: {
-    label: "Ops-heavy SME workflow",
-    multiplier: 1.6,
-    definition: "50+ users, multiple teams or sites, compliance, reporting or operational risk.",
-    questions: ["Are multiple teams or sites involved?", "What happens if the workflow fails?"],
-  },
-} satisfies Record<string, Option>;
+const dataLabels: Record<DataReadiness, string> = {
+  clean: "Clean",
+  mixed: "Mixed",
+  messy: "Messy",
+  unknown: "Unknown",
+};
 
-const complexityOptions = {
-  low: {
-    label: "Low complexity",
-    multiplier: 1,
-    definition: "One workflow, clear input, clear output and few exceptions.",
-    questions: ["Is the process mostly the same each time?", "Are the rules obvious?"],
-  },
-  medium: {
-    label: "Medium complexity",
-    multiplier: 1.25,
-    definition: "Several steps, a few decision rules and some exceptions.",
-    questions: ["How many steps are involved?", "What are the common exceptions?"],
-  },
-  high: {
-    label: "High complexity",
-    multiplier: 1.55,
-    definition: "Multiple user roles, approvals, edge cases, handovers or risk.",
-    questions: ["Who approves or checks the work?", "What needs human judgement?"],
-  },
-  veryHigh: {
-    label: "Very high complexity",
-    multiplier: 1.9,
-    definition: "Compliance-heavy, multi-system, sensitive data or complex business logic.",
-    questions: ["Is sensitive data involved?", "Could mistakes create business or compliance risk?"],
-  },
-} satisfies Record<string, Option>;
+const integrationLabels: Record<IntegrationLoad, string> = {
+  none: "None",
+  light: "Light",
+  moderate: "Moderate",
+  heavy: "Heavy",
+};
 
-const dataOptions = {
-  clean: {
-    label: "Clean",
-    multiplier: 1,
-    definition: "One clear source, structured fields, exportable data and low duplication.",
-    questions: ["Is there one source of truth?", "Can the data be exported easily?"],
-  },
-  mixed: {
-    label: "Mixed",
-    multiplier: 1.2,
-    definition: "Some spreadsheets, some manual notes and inconsistent fields.",
-    questions: ["Which fields are inconsistent?", "Who cleans the data before using it?"],
-  },
-  messy: {
-    label: "Messy",
-    multiplier: 1.45,
-    definition: "Duplicates, missing fields, no clear owner or knowledge stuck in people's heads.",
-    questions: ["Where do duplicates appear?", "Which knowledge only lives with one person?"],
-  },
-  unknown: {
-    label: "Unknown",
-    multiplier: 1.1,
-    definition: "The client does not yet know where all data lives or how reliable it is.",
-    questions: ["Where might the data live?", "Who knows the process best?"],
-  },
-} satisfies Record<string, Option>;
-
-const integrationOptions = {
-  none: {
-    label: "None",
-    multiplier: 1,
-    definition: "Standalone tool, manual upload/download or copy/paste handoff.",
-    questions: ["Can we prove this manually first?", "Can the client upload or export a file?"],
-  },
-  light: {
-    label: "Light",
-    multiplier: 1.15,
-    definition: "Email, form, spreadsheet, WhatsApp link or CSV export.",
-    questions: ["Does it need to send an email or WhatsApp message?", "Is a spreadsheet enough for V1?"],
-  },
-  moderate: {
-    label: "Moderate",
-    multiplier: 1.35,
-    definition: "CRM, database, Airtable, Google Sheets, Supabase or one API connection.",
-    questions: ["Which system should be updated?", "Is API access available?"],
-  },
-  heavy: {
-    label: "Heavy",
-    multiplier: 1.65,
-    definition: "Multiple systems, authentication, permissions, live sync or complex APIs.",
-    questions: ["Who owns access?", "Does it need permissions or live sync?"],
-  },
-} satisfies Record<string, Option>;
-
-const paceOptions = {
-  normal: {
-    label: "Normal",
-    multiplier: 1,
-    definition: "No hard deadline and a sensible delivery pace.",
-    questions: ["What is the ideal date?", "Who needs to review the work?"],
-  },
-  soon: {
-    label: "Soon",
-    multiplier: 1.1,
-    definition: "Needed in the next 2-4 weeks.",
-    questions: ["What happens if this waits a month?", "Can the client review quickly?"],
-  },
-  fast: {
-    label: "Fast-track",
-    multiplier: 1.25,
-    definition: "Needed in 1-2 weeks and the client can support quick decisions.",
-    questions: ["Can access and data be provided quickly?", "Can feedback happen within 24-48 hours?"],
-  },
-  critical: {
-    label: "Critical",
-    multiplier: 1.45,
-    definition: "Deadline this week, business risk or event-driven pressure.",
-    questions: ["What is the hard deadline?", "Who can unblock decisions immediately?"],
-  },
-} satisfies Record<string, Option>;
+const paceLabels: Record<Pace, string> = {
+  normal: "Normal",
+  soon: "Soon",
+  fast: "Fast-track",
+  critical: "Critical",
+};
 
 export default function GuidedCosting() {
   const [viewMode, setViewMode] = useState<ViewMode>("consultant");
-  const [engagement, setEngagement] = useState<keyof typeof engagementOptions>("build");
-  const [footprint, setFootprint] = useState<keyof typeof footprintOptions>("small");
-  const [complexity, setComplexity] = useState<keyof typeof complexityOptions>("medium");
-  const [data, setData] = useState<keyof typeof dataOptions>("mixed");
-  const [integrations, setIntegrations] = useState<keyof typeof integrationOptions>("light");
-  const [pace, setPace] = useState<keyof typeof paceOptions>("normal");
-  const [supportMonths, setSupportMonths] = useState("1");
 
-  const estimate = useMemo(() => {
-    const base = engagementOptions[engagement].base || 0;
-    const support = Number(supportMonths || 0) * 350;
-    const raw =
-      base *
-        (footprintOptions[footprint].multiplier || 1) *
-        (complexityOptions[complexity].multiplier || 1) *
-        (dataOptions[data].multiplier || 1) *
-        (integrationOptions[integrations].multiplier || 1) *
-        (paceOptions[pace].multiplier || 1) +
-      support;
+  const [clientName, setClientName] = useState("");
+  const [problem, setProblem] = useState("");
+  const [frequency, setFrequency] = useState("Daily");
+  const [people, setPeople] = useState(5);
+  const [systems, setSystems] = useState(3);
+  const [handovers, setHandovers] = useState(3);
+  const [hoursPerPerson, setHoursPerPerson] = useState(8);
+  const [hourlyCost, setHourlyCost] = useState(25);
+  const [automationPotential, setAutomationPotential] = useState(50);
+  const [complexity, setComplexity] = useState<Complexity>("medium");
+  const [dataReadiness, setDataReadiness] = useState<DataReadiness>("mixed");
+  const [integrationLoad, setIntegrationLoad] = useState<IntegrationLoad>("light");
+  const [pace, setPace] = useState<Pace>("normal");
+  const [businessRisk, setBusinessRisk] = useState("Medium");
+  const [desiredOutcome, setDesiredOutcome] = useState("");
 
-    const recommended = Math.round(raw / 50) * 50;
-    const rangeLow = Math.round((recommended * 0.85) / 50) * 50;
-    const rangeHigh = Math.round((recommended * 1.2) / 50) * 50;
+  const model = useMemo(() => {
+    const monthlyHours = people * hoursPerPerson;
+    const monthlyCapacityCost = monthlyHours * hourlyCost;
+    const annualCapacityCost = monthlyCapacityCost * 12;
+    const monthlyCapacityReleased = Math.round(monthlyHours * (automationPotential / 100));
+    const annualValuePotential = Math.round(annualCapacityCost * (automationPotential / 100));
 
-    const riskFlags = [
-      data === "unknown",
-      data === "messy",
-      complexity === "high" || complexity === "veryHigh",
-      integrations === "heavy",
-      pace === "critical",
-    ].filter(Boolean).length;
+    const footprintMultiplier = people <= 3 ? 1 : people <= 10 ? 1.15 : people <= 25 ? 1.35 : 1.6;
+    const complexityMultiplier = { low: 1, medium: 1.25, high: 1.55, veryHigh: 1.9 }[complexity];
+    const dataMultiplier = { clean: 1, mixed: 1.2, messy: 1.45, unknown: 1.1 }[dataReadiness];
+    const integrationMultiplier = { none: 1, light: 1.15, moderate: 1.35, heavy: 1.65 }[integrationLoad];
+    const paceMultiplier = { normal: 1, soon: 1.1, fast: 1.25, critical: 1.45 }[pace];
+    const systemMultiplier = systems <= 1 ? 1 : systems <= 3 ? 1.08 : systems <= 5 ? 1.18 : 1.3;
+    const handoverMultiplier = handovers <= 2 ? 1 : handovers <= 5 ? 1.08 : 1.18;
 
-    const confidence = riskFlags >= 3 ? "Low" : riskFlags >= 1 ? "Medium" : "High";
+    let recommendedStep = "Focused AI Build";
+    let base = 3500;
 
-    let recommendedStep = engagementOptions[engagement].label;
-
-    if (data === "unknown") {
+    if (dataReadiness === "unknown") {
       recommendedStep = "Beacon Audit";
+      base = 750;
     } else if (
-      data === "messy" ||
+      dataReadiness === "messy" ||
       complexity === "high" ||
       complexity === "veryHigh" ||
-      integrations === "moderate" ||
-      integrations === "heavy"
+      integrationLoad === "moderate" ||
+      integrationLoad === "heavy" ||
+      systems >= 4 ||
+      handovers >= 5
     ) {
-      recommendedStep = "Beacon Blueprint";
-    } else if (engagement === "retainer") {
-      recommendedStep = "Support Retainer";
-    } else if (engagement === "audit") {
+      recommendedStep = "Beacon Blueprint → Focused AI Build";
+      base = 4200;
+    } else if (monthlyHours < 12 && systems <= 2 && complexity === "low") {
       recommendedStep = "Beacon Audit";
-    } else if (engagement === "blueprint") {
-      recommendedStep = "Beacon Blueprint";
-    } else {
-      recommendedStep = "Focused AI Build";
+      base = 750;
     }
 
-    const clientReasons = [
-      `The workflow footprint is ${footprintOptions[footprint].label.toLowerCase()}.`,
-      `The process appears to be ${complexityOptions[complexity].label.toLowerCase()}.`,
-      `Data readiness is currently ${dataOptions[data].label.toLowerCase()}.`,
-      `Integration needs look ${integrationOptions[integrations].label.toLowerCase()}.`,
-      `The required pace is ${paceOptions[pace].label.toLowerCase()}.`,
+    const raw =
+      base *
+      footprintMultiplier *
+      complexityMultiplier *
+      dataMultiplier *
+      integrationMultiplier *
+      paceMultiplier *
+      systemMultiplier *
+      handoverMultiplier;
+
+    const midpoint = Math.max(base, Math.round(raw / 100) * 100);
+    const rangeLow = Math.round((midpoint * 0.85) / 100) * 100;
+    const rangeHigh = Math.round((midpoint * 1.2) / 100) * 100;
+    const commercialFloor = Math.round((rangeLow * 0.8) / 100) * 100;
+    const deposit = Math.round((rangeLow * 0.4) / 100) * 100;
+
+    const score =
+      (people <= 3 ? 1 : people <= 10 ? 2 : people <= 25 ? 3 : 4) +
+      (systems <= 1 ? 1 : systems <= 3 ? 2 : systems <= 5 ? 3 : 4) +
+      (handovers <= 2 ? 1 : handovers <= 5 ? 2 : 3) +
+      ({ low: 1, medium: 2, high: 3, veryHigh: 4 }[complexity]) +
+      ({ clean: 1, mixed: 2, messy: 3, unknown: 3 }[dataReadiness]) +
+      ({ none: 1, light: 2, moderate: 3, heavy: 4 }[integrationLoad]);
+
+    const profile = score <= 8 ? "Simple" : score <= 12 ? "Moderate" : score <= 16 ? "Complex" : "High-complexity";
+
+    const reasons = [
+      `${people} people touch the workflow`,
+      `${systems} system${systems === 1 ? "" : "s"} are involved`,
+      `${handovers} manual handover${handovers === 1 ? "" : "s"}`,
+      `${dataLabels[dataReadiness]} data readiness`,
+      `${integrationLabels[integrationLoad]} integration need`,
     ];
 
     return {
+      monthlyHours,
+      monthlyCapacityCost,
+      annualCapacityCost,
+      monthlyCapacityReleased,
+      annualValuePotential,
+      recommendedStep,
       rangeLow,
       rangeHigh,
-      commercialFloor: Math.round((rangeLow * 0.75) / 50) * 50,
-      deposit: engagement === "retainer" ? rangeLow : Math.round((rangeLow * 0.4) / 50) * 50,
-      confidence,
-      recommendedStep,
-      clientReasons,
-      internalReasons: [
-        footprintOptions[footprint].label,
-        complexityOptions[complexity].label,
-        `${dataOptions[data].label} data readiness`,
-        `${integrationOptions[integrations].label} integrations`,
-        `${paceOptions[pace].label} pace`,
-      ],
+      commercialFloor,
+      deposit,
+      profile,
+      reasons,
     };
-  }, [engagement, footprint, complexity, data, integrations, pace, supportMonths]);
+  }, [people, systems, handovers, hoursPerPerson, hourlyCost, automationPotential, complexity, dataReadiness, integrationLoad, pace]);
 
   return (
-    <main className="min-h-screen bg-[#FBFAF7] px-6 py-8 text-[#18140D]">
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-center">
+    <main className="min-h-screen bg-[#FBFAF7] px-5 py-6 text-[#18140D] md:px-8 md:py-8">
+      <div className="mx-auto max-w-[1500px]">
+        <header className="mb-6 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[#BA7517]">FirstLight OS</p>
-            <h1 className="mt-2 text-4xl font-semibold tracking-tight">Guided costing demo</h1>
-            <p className="mt-3 max-w-2xl leading-7 text-[#6B604D]">
-              Use Consultant View while scoping, then switch to Client View for a clean recommendation.
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#BA7517]">FirstLight OS</p>
+            <h1 className="mt-2 text-4xl font-semibold tracking-tight md:text-5xl">Discovery Console</h1>
+            <p className="mt-3 max-w-3xl text-[#6B604D]">
+              Ask simple business questions. The workflow profile, value opportunity and recommended route update live as the client answers.
             </p>
           </div>
+
           <div className="flex flex-wrap gap-3">
             <div className="rounded-full border border-[#D8C99F] bg-white p-1 shadow-sm">
               <button
                 onClick={() => setViewMode("consultant")}
-                className={`rounded-full px-4 py-2 text-sm font-semibold transition ${viewMode === "consultant" ? "bg-[#18140D] text-white" : "text-[#6B604D] hover:text-[#18140D]"}`}
+                className={`rounded-full px-4 py-2 text-sm font-semibold transition ${viewMode === "consultant" ? "bg-[#18140D] text-white" : "text-[#6B604D]"}`}
               >
                 Consultant View
               </button>
               <button
                 onClick={() => setViewMode("client")}
-                className={`rounded-full px-4 py-2 text-sm font-semibold transition ${viewMode === "client" ? "bg-[#BA7517] text-white" : "text-[#6B604D] hover:text-[#18140D]"}`}
+                className={`rounded-full px-4 py-2 text-sm font-semibold transition ${viewMode === "client" ? "bg-[#BA7517] text-white" : "text-[#6B604D]"}`}
               >
                 Client View
               </button>
             </div>
             <a href="/admin" className="rounded-full border border-[#D8C99F] px-4 py-2 text-sm font-semibold hover:border-[#BA7517]">Back to OS</a>
-            <a href="/" className="rounded-full bg-[#18140D] px-4 py-2 text-sm font-semibold text-white hover:bg-[#BA7517]">View website</a>
           </div>
-        </div>
+        </header>
 
         {viewMode === "consultant" ? (
-          <ConsultantView
-            engagement={engagement}
-            setEngagement={setEngagement}
-            footprint={footprint}
-            setFootprint={setFootprint}
-            complexity={complexity}
-            setComplexity={setComplexity}
-            data={data}
-            setData={setData}
-            integrations={integrations}
-            setIntegrations={setIntegrations}
-            pace={pace}
-            setPace={setPace}
-            supportMonths={supportMonths}
-            setSupportMonths={setSupportMonths}
-            estimate={estimate}
-          />
+          <div className="grid gap-5 xl:grid-cols-[1.05fr_0.75fr_0.85fr]">
+            <section className="rounded-[2rem] border border-[#EADFCA] bg-white p-6 shadow-[0_20px_60px_rgba(38,31,18,0.05)]">
+              <div className="mb-6">
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#BA7517]">01 · Discovery</p>
+                <h2 className="mt-2 text-2xl font-semibold">Ask, listen, update.</h2>
+                <p className="mt-2 text-sm leading-6 text-[#6B604D]">Do not ask the client to score complexity. Ask normal questions, then set the internal assessment yourself.</p>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <TextField label="Client / company" value={clientName} onChange={setClientName} placeholder="MW Financial Solutions" />
+                <SelectField label="How often does this happen?" value={frequency} onChange={setFrequency} options={["Several times a day", "Daily", "Weekly", "Monthly", "Ad hoc"]} />
+
+                <label className="grid gap-2 text-sm font-semibold md:col-span-2">
+                  What problem are we trying to fix?
+                  <textarea value={problem} onChange={(e) => setProblem(e.target.value)} className="min-h-24 rounded-2xl border border-[#D8C99F] bg-[#FBFAF7] p-4 font-normal outline-none focus:border-[#BA7517]" placeholder="Describe the repeated admin, delay, handover or decision problem..." />
+                </label>
+
+                <NumberField label="People touching the process" value={people} onChange={setPeople} min={1} />
+                <NumberField label="Systems / tools involved" value={systems} onChange={setSystems} min={0} />
+                <NumberField label="Manual handovers" value={handovers} onChange={setHandovers} min={0} />
+                <NumberField label="Hours per person / month" value={hoursPerPerson} onChange={setHoursPerPerson} min={0} />
+                <NumberField label="Loaded hourly cost (£)" value={hourlyCost} onChange={setHourlyCost} min={0} />
+
+                <label className="grid gap-2 text-sm font-semibold">
+                  Realistic automation potential
+                  <div className="rounded-2xl border border-[#D8C99F] bg-[#FBFAF7] p-4">
+                    <div className="mb-3 flex items-center justify-between font-normal text-[#6B604D]"><span>Capacity that could be released</span><strong className="text-[#18140D]">{automationPotential}%</strong></div>
+                    <input type="range" min="10" max="90" step="5" value={automationPotential} onChange={(e) => setAutomationPotential(Number(e.target.value))} className="w-full accent-[#BA7517]" />
+                  </div>
+                </label>
+
+                <SelectField label="Internal complexity assessment" value={complexity} onChange={(v) => setComplexity(v as Complexity)} options={["low", "medium", "high", "veryHigh"]} renderLabel={(v) => complexityLabels[v as Complexity]} />
+                <SelectField label="Data readiness" value={dataReadiness} onChange={(v) => setDataReadiness(v as DataReadiness)} options={["clean", "mixed", "messy", "unknown"]} renderLabel={(v) => dataLabels[v as DataReadiness]} />
+                <SelectField label="Integration need" value={integrationLoad} onChange={(v) => setIntegrationLoad(v as IntegrationLoad)} options={["none", "light", "moderate", "heavy"]} renderLabel={(v) => integrationLabels[v as IntegrationLoad]} />
+                <SelectField label="Delivery pace" value={pace} onChange={(v) => setPace(v as Pace)} options={["normal", "soon", "fast", "critical"]} renderLabel={(v) => paceLabels[v as Pace]} />
+                <SelectField label="Business risk if this goes wrong" value={businessRisk} onChange={setBusinessRisk} options={["Low", "Medium", "High", "Critical"]} />
+
+                <label className="grid gap-2 text-sm font-semibold md:col-span-2">
+                  What would better look like?
+                  <textarea value={desiredOutcome} onChange={(e) => setDesiredOutcome(e.target.value)} className="min-h-24 rounded-2xl border border-[#D8C99F] bg-[#FBFAF7] p-4 font-normal outline-none focus:border-[#BA7517]" placeholder="Faster follow-up, fewer errors, less admin, clearer reporting..." />
+                </label>
+              </div>
+            </section>
+
+            <section className="rounded-[2rem] border border-[#EADFCA] bg-white p-6 shadow-[0_20px_60px_rgba(38,31,18,0.05)]">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#BA7517]">02 · Live workflow profile</p>
+              <h2 className="mt-2 text-2xl font-semibold">The model reacts as you talk.</h2>
+
+              <div className="mt-6 grid gap-3">
+                <Metric label="Workflow profile" value={model.profile} />
+                <Metric label="People involved" value={String(people)} />
+                <Metric label="Systems involved" value={String(systems)} />
+                <Metric label="Manual handovers" value={String(handovers)} />
+                <Metric label="Monthly manual effort" value={`${model.monthlyHours} hrs`} />
+                <Metric label="Data readiness" value={dataLabels[dataReadiness]} />
+                <Metric label="Complexity" value={complexityLabels[complexity]} />
+                <Metric label="Integration load" value={integrationLabels[integrationLoad]} />
+                <Metric label="Delivery pressure" value={paceLabels[pace]} />
+                <Metric label="Business risk" value={businessRisk} />
+              </div>
+
+              <div className="mt-6 rounded-2xl bg-[#FBFAF7] p-5">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#BA7517]">Capacity/value view</p>
+                <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
+                  <ValueBlock label="Current capacity cost" value={`${gbp.format(model.monthlyCapacityCost)}/mo`} />
+                  <ValueBlock label="Annual capacity cost" value={gbp.format(model.annualCapacityCost)} />
+                  <ValueBlock label="Potential capacity released" value={`${model.monthlyCapacityReleased} hrs/mo`} />
+                  <ValueBlock label="Estimated annual value" value={gbp.format(model.annualValuePotential)} />
+                </div>
+                <p className="mt-4 text-xs leading-5 text-[#6B604D]">Capacity released is an estimate, not guaranteed cash saving. Use it to frame the opportunity, not promise ROI.</p>
+              </div>
+            </section>
+
+            <section className="rounded-[2rem] bg-[#18140D] p-6 text-white shadow-[0_30px_80px_rgba(24,20,13,0.18)]">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#D4AF37]">03 · Recommendation</p>
+              <h2 className="mt-3 text-3xl font-semibold">Let the route emerge.</h2>
+
+              <div className="mt-6 rounded-[2rem] bg-white p-6 text-[#18140D]">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#BA7517]">Best fit</p>
+                <p className="mt-3 text-3xl font-semibold">{model.recommendedStep}</p>
+                <p className="mt-6 text-xs font-semibold uppercase tracking-[0.18em] text-[#BA7517]">Indicative investment</p>
+                <p className="mt-2 text-4xl font-semibold">{gbp.format(model.rangeLow)}–{gbp.format(model.rangeHigh)}</p>
+              </div>
+
+              <div className="mt-5 grid gap-3 rounded-2xl border border-white/10 bg-white/[0.05] p-5 text-sm text-white/70">
+                <p><span className="font-semibold text-white">Commercial floor:</span> {gbp.format(model.commercialFloor)}</p>
+                <p><span className="font-semibold text-white">Suggested deposit:</span> {gbp.format(model.deposit)}</p>
+                <p><span className="font-semibold text-white">Frequency:</span> {frequency}</p>
+              </div>
+
+              <div className="mt-5">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D4AF37]">Why</p>
+                <ul className="mt-3 space-y-3 text-sm text-white/70">
+                  {model.reasons.map((reason) => <li key={reason}>• {reason}</li>)}
+                </ul>
+              </div>
+
+              <button onClick={() => setViewMode("client")} className="mt-7 w-full rounded-2xl bg-[#D4AF37] px-5 py-4 font-semibold text-[#18140D] transition hover:bg-white">
+                Present recommendation →
+              </button>
+            </section>
+          </div>
         ) : (
-          <ClientView estimate={estimate} />
+          <ClientPresentation
+            clientName={clientName}
+            problem={problem}
+            desiredOutcome={desiredOutcome}
+            people={people}
+            systems={systems}
+            handovers={handovers}
+            model={model}
+          />
         )}
       </div>
     </main>
   );
 }
 
-function ConsultantView({
-  engagement,
-  setEngagement,
-  footprint,
-  setFootprint,
-  complexity,
-  setComplexity,
-  data,
-  setData,
-  integrations,
-  setIntegrations,
-  pace,
-  setPace,
-  supportMonths,
-  setSupportMonths,
-  estimate,
-}: {
-  engagement: keyof typeof engagementOptions;
-  setEngagement: (value: keyof typeof engagementOptions) => void;
-  footprint: keyof typeof footprintOptions;
-  setFootprint: (value: keyof typeof footprintOptions) => void;
-  complexity: keyof typeof complexityOptions;
-  setComplexity: (value: keyof typeof complexityOptions) => void;
-  data: keyof typeof dataOptions;
-  setData: (value: keyof typeof dataOptions) => void;
-  integrations: keyof typeof integrationOptions;
-  setIntegrations: (value: keyof typeof integrationOptions) => void;
-  pace: keyof typeof paceOptions;
-  setPace: (value: keyof typeof paceOptions) => void;
-  supportMonths: string;
-  setSupportMonths: (value: string) => void;
-  estimate: {
+function ClientPresentation({ clientName, problem, desiredOutcome, people, systems, handovers, model }: {
+  clientName: string;
+  problem: string;
+  desiredOutcome: string;
+  people: number;
+  systems: number;
+  handovers: number;
+  model: {
+    monthlyHours: number;
+    monthlyCapacityReleased: number;
+    annualValuePotential: number;
+    recommendedStep: string;
     rangeLow: number;
     rangeHigh: number;
-    commercialFloor: number;
-    deposit: number;
-    confidence: string;
-    recommendedStep: string;
-    internalReasons: string[];
+    reasons: string[];
   };
 }) {
   return (
-    <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
-      <section className="rounded-[2rem] bg-[#18140D] p-8 text-white shadow-[0_30px_80px_rgba(24,20,13,0.18)]">
-        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[#D4AF37]">Consultant View</p>
-        <h2 className="mt-4 text-4xl font-semibold tracking-tight">Price the workflow, not the buzzword.</h2>
-        <p className="mt-5 leading-7 text-white/70">
-          This view shows the internal scoping logic, commercial floor and confidence level. Use it while asking questions.
-        </p>
+    <section className="mx-auto max-w-6xl overflow-hidden rounded-[2.2rem] border border-[#EADFCA] bg-white shadow-[0_30px_100px_rgba(38,31,18,0.10)]">
+      <div className="bg-[#18140D] p-8 text-white md:p-12">
+        <p className="text-sm font-semibold uppercase tracking-[0.26em] text-[#D4AF37]">FirstLight AI</p>
+        <div className="mt-5 grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
+          <div>
+            <h2 className="text-4xl font-semibold tracking-tight md:text-6xl">Your workflow, made clearer.</h2>
+            <p className="mt-5 max-w-3xl text-lg leading-8 text-white/70">Based on what we have discussed, this is the most sensible route for improving the workflow before applying automation or AI.</p>
+            {clientName ? <p className="mt-5 text-sm text-white/50">Prepared live for {clientName}</p> : null}
+          </div>
+          <div className="rounded-3xl border border-white/10 bg-white/[0.06] p-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D4AF37]">Recommended starting point</p>
+            <p className="mt-3 text-3xl font-semibold">{model.recommendedStep}</p>
+          </div>
+        </div>
+      </div>
 
-        <div className="mt-8 rounded-[2rem] bg-white p-6 text-[#18140D]">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#BA7517]">Recommended start</p>
-          <p className="mt-3 text-4xl font-semibold">{estimate.recommendedStep}</p>
+      <div className="p-8 md:p-12">
+        {(problem || desiredOutcome) ? (
+          <div className="mb-8 grid gap-5 md:grid-cols-2">
+            {problem ? <ClientCard eyebrow="What we heard" title="Current challenge" text={problem} /> : null}
+            {desiredOutcome ? <ClientCard eyebrow="What better looks like" title="Desired outcome" text={desiredOutcome} /> : null}
+          </div>
+        ) : null}
 
-          <p className="mt-6 text-sm font-semibold uppercase tracking-[0.2em] text-[#BA7517]">Estimated range</p>
-          <p className="mt-3 text-5xl font-semibold">{gbp.format(estimate.rangeLow)}-{gbp.format(estimate.rangeHigh)}</p>
+        <div className="grid gap-4 md:grid-cols-4">
+          <BigMetric label="Manual effort" value={`${model.monthlyHours} hrs/mo`} />
+          <BigMetric label="People involved" value={String(people)} />
+          <BigMetric label="Systems involved" value={String(systems)} />
+          <BigMetric label="Handovers" value={String(handovers)} />
+        </div>
 
-          <div className="mt-6 grid gap-3 text-sm text-[#6B604D]">
-            <p><span className="font-semibold text-[#18140D]">Commercial floor:</span> {gbp.format(estimate.commercialFloor)}</p>
-            <p><span className="font-semibold text-[#18140D]">Suggested deposit:</span> {gbp.format(estimate.deposit)}</p>
-            <p><span className="font-semibold text-[#18140D]">Confidence:</span> {estimate.confidence}</p>
+        <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_1fr]">
+          <div className="rounded-[2rem] bg-[#FBFAF7] p-7">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#BA7517]">Potential opportunity</p>
+            <p className="mt-3 text-4xl font-semibold">~{model.monthlyCapacityReleased} hrs/month</p>
+            <p className="mt-4 leading-7 text-[#6B604D]">Estimated staff capacity that could potentially be released for higher-value work.</p>
+            <p className="mt-5 text-2xl font-semibold">{gbp.format(model.annualValuePotential)} <span className="text-base font-normal text-[#6B604D]">estimated annual capacity value</span></p>
           </div>
 
-          <div className="mt-6 flex flex-wrap gap-2">
-            {estimate.internalReasons.map((reason) => (
-              <span key={reason} className="rounded-full bg-[#FBFAF7] px-3 py-1 text-xs font-semibold text-[#6B604D]">
-                {reason}
-              </span>
+          <div className="rounded-[2rem] bg-[#FBFAF7] p-7">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#BA7517]">Indicative investment</p>
+            <p className="mt-3 text-4xl font-semibold">{gbp.format(model.rangeLow)}–{gbp.format(model.rangeHigh)}</p>
+            <p className="mt-4 leading-7 text-[#6B604D]">This is an indicative range based on the workflow as understood today. Final scope is confirmed before work begins.</p>
+          </div>
+        </div>
+
+        <div className="mt-8 rounded-[2rem] border border-[#EADFCA] p-7">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#BA7517]">Why this route</p>
+          <div className="mt-5 grid gap-3 md:grid-cols-2">
+            {model.reasons.map((reason) => (
+              <div key={reason} className="flex gap-3 rounded-2xl bg-[#FBFAF7] p-4 text-[#6B604D]"><span className="text-[#BA7517]">✦</span><span>{reason}</span></div>
             ))}
           </div>
         </div>
 
-        <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.05] p-5 text-sm leading-6 text-white/70">
-          <p className="font-semibold text-white">Demo script</p>
-          <p className="mt-3">
-            I price this by walking through the workflow footprint, complexity, data readiness, integrations and pace. That shows whether we should start with an Audit, Blueprint or Build.
-          </p>
-        </div>
-      </section>
-
-      <section className="grid gap-4 md:grid-cols-2">
-        <SelectField label="1. Engagement being scoped" value={engagement} onChange={(value) => setEngagement(value as keyof typeof engagementOptions)} options={engagementOptions} />
-        <SelectField label="2. Workflow footprint" value={footprint} onChange={(value) => setFootprint(value as keyof typeof footprintOptions)} options={footprintOptions} />
-        <SelectField label="3. Process complexity" value={complexity} onChange={(value) => setComplexity(value as keyof typeof complexityOptions)} options={complexityOptions} />
-        <SelectField label="4. Data readiness" value={data} onChange={(value) => setData(value as keyof typeof dataOptions)} options={dataOptions} />
-        <SelectField label="5. Integration needs" value={integrations} onChange={(value) => setIntegrations(value as keyof typeof integrationOptions)} options={integrationOptions} />
-        <SelectField label="6. Delivery pace" value={pace} onChange={(value) => setPace(value as keyof typeof paceOptions)} options={paceOptions} />
-
-        <label className="grid gap-2 rounded-[2rem] border border-[#EADFCA] bg-white p-5 text-sm font-semibold shadow-[0_15px_50px_rgba(38,31,18,0.05)] md:col-span-2">
-          Support months
-          <input
-            type="number"
-            min="0"
-            value={supportMonths}
-            onChange={(event) => setSupportMonths(event.target.value)}
-            className="rounded-2xl border border-[#D8C99F] bg-[#FBFAF7] p-4 font-normal outline-none focus:border-[#D4AF37]"
-          />
-        </label>
-      </section>
-    </div>
-  );
-}
-
-function ClientView({
-  estimate,
-}: {
-  estimate: {
-    rangeLow: number;
-    rangeHigh: number;
-    deposit: number;
-    recommendedStep: string;
-    clientReasons: string[];
-  };
-}) {
-  return (
-    <section className="mx-auto max-w-5xl rounded-[2rem] border border-[#EADFCA] bg-white p-8 shadow-[0_25px_80px_rgba(38,31,18,0.08)] md:p-12">
-      <div className="flex flex-col justify-between gap-6 border-b border-[#EADFCA] pb-8 md:flex-row md:items-start">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[#BA7517]">FirstLight AI</p>
-          <h2 className="mt-3 text-4xl font-semibold tracking-tight md:text-5xl">Clean process first. Useful AI second.</h2>
-          <p className="mt-5 max-w-2xl leading-7 text-[#6B604D]">
-            Based on what we have discussed, this is the sensible starting point for simplifying the workflow and applying useful AI or automation safely.
-          </p>
-        </div>
-        <div className="rounded-2xl bg-[#18140D] px-5 py-4 text-white">
-          <p className="text-xs uppercase tracking-[0.2em] text-[#D4AF37]">Recommendation</p>
-          <p className="mt-2 text-xl font-semibold">{estimate.recommendedStep}</p>
-        </div>
-      </div>
-
-      <div className="mt-8 grid gap-6 md:grid-cols-2">
-        <div className="rounded-[2rem] bg-[#FBFAF7] p-6">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#BA7517]">Indicative range</p>
-          <p className="mt-3 text-4xl font-semibold">{gbp.format(estimate.rangeLow)}-{gbp.format(estimate.rangeHigh)}</p>
-          <p className="mt-4 text-sm leading-6 text-[#6B604D]">
-            This is an indicative range based on the current understanding of the workflow. A final proposal may change once the process, data and access requirements are confirmed.
-          </p>
+        <div className="mt-8 grid gap-4 md:grid-cols-3">
+          <JourneyStep number="01" title="Map" text="Confirm the real workflow, data, people and friction." />
+          <JourneyStep number="02" title="Design" text="Define the smallest useful system and the controls around it." />
+          <JourneyStep number="03" title="Build" text="Create, test and improve the solution with real users." />
         </div>
 
-        <div className="rounded-[2rem] bg-[#FBFAF7] p-6">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#BA7517]">Suggested next step</p>
-          <p className="mt-3 text-3xl font-semibold">Confirm scope</p>
-          <p className="mt-4 text-sm leading-6 text-[#6B604D]">
-            The next step is to confirm the workflow, agree what V1 should include and identify what data or system access is needed.
-          </p>
+        <div className="mt-8 flex flex-col justify-between gap-4 rounded-[2rem] bg-[#18140D] p-7 text-white md:flex-row md:items-center">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#D4AF37]">Next step</p>
+            <p className="mt-2 text-2xl font-semibold">Confirm the first scope together.</p>
+          </div>
+          <p className="max-w-xl text-sm leading-6 text-white/65">Clean process first. Useful AI second. The aim is to prove the workflow and value before building more than the business needs.</p>
         </div>
-      </div>
-
-      <div className="mt-8 rounded-[2rem] border border-[#EADFCA] p-6">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#BA7517]">Why this route</p>
-        <ul className="mt-5 grid gap-3 text-[#6B604D] md:grid-cols-2">
-          {estimate.clientReasons.map((reason) => (
-            <li key={reason} className="flex gap-3 rounded-2xl bg-[#FBFAF7] p-4">
-              <span className="mt-1 text-[#BA7517]">✦</span>
-              <span>{reason}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="mt-8 grid gap-6 md:grid-cols-3">
-        <ClientStep title="1. Map" text="Clarify the workflow, people, systems, handovers and repeated admin." />
-        <ClientStep title="2. Design" text="Define the useful first version, data needs, logic and risks." />
-        <ClientStep title="3. Build" text="Create or prepare the practical system once the process is clear." />
-      </div>
-
-      <div className="mt-8 rounded-[2rem] bg-[#18140D] p-6 text-white">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#D4AF37]">What we need from you</p>
-        <p className="mt-4 leading-7 text-white/70">
-          Access to the current workflow, example documents or spreadsheets, the people who use the process, and quick feedback on the first draft of the scope.
-        </p>
       </div>
     </section>
   );
 }
 
-function ClientStep({ title, text }: { title: string; text: string }) {
-  return (
-    <div className="rounded-[2rem] border border-[#EADFCA] bg-[#FBFAF7] p-6">
-      <h3 className="text-xl font-semibold">{title}</h3>
-      <p className="mt-3 text-sm leading-6 text-[#6B604D]">{text}</p>
-    </div>
-  );
+function TextField({ label, value, onChange, placeholder }: { label: string; value: string; onChange: (value: string) => void; placeholder?: string }) {
+  return <label className="grid gap-2 text-sm font-semibold">{label}<input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} className="rounded-2xl border border-[#D8C99F] bg-[#FBFAF7] p-4 font-normal outline-none focus:border-[#BA7517]" /></label>;
 }
 
-function SelectField({
-  label,
-  value,
-  onChange,
-  options,
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  options: Record<string, Option>;
-}) {
-  const selectedOption = options[value];
+function NumberField({ label, value, onChange, min = 0 }: { label: string; value: number; onChange: (value: number) => void; min?: number }) {
+  return <label className="grid gap-2 text-sm font-semibold">{label}<input type="number" min={min} value={value} onChange={(e) => onChange(Math.max(min, Number(e.target.value) || 0))} className="rounded-2xl border border-[#D8C99F] bg-[#FBFAF7] p-4 font-normal outline-none focus:border-[#BA7517]" /></label>;
+}
 
-  return (
-    <label className="grid gap-2 rounded-[2rem] border border-[#EADFCA] bg-white p-5 text-sm font-semibold shadow-[0_15px_50px_rgba(38,31,18,0.05)]">
-      {label}
-      <select
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        className="rounded-2xl border border-[#D8C99F] bg-[#FBFAF7] p-4 font-normal outline-none focus:border-[#D4AF37]"
-      >
-        {Object.entries(options).map(([key, option]) => (
-          <option key={key} value={key}>{option.label}</option>
-        ))}
-      </select>
-      <div className="rounded-2xl bg-[#FBFAF7] p-4 font-normal leading-6 text-[#6B604D]">
-        <p>{selectedOption.definition}</p>
-        <ul className="mt-3 list-disc space-y-1 pl-5">
-          {selectedOption.questions.map((question) => (
-            <li key={question}>{question}</li>
-          ))}
-        </ul>
-      </div>
-    </label>
-  );
+function SelectField({ label, value, onChange, options, renderLabel }: { label: string; value: string; onChange: (value: string) => void; options: string[]; renderLabel?: (value: string) => string }) {
+  return <label className="grid gap-2 text-sm font-semibold">{label}<select value={value} onChange={(e) => onChange(e.target.value)} className="rounded-2xl border border-[#D8C99F] bg-[#FBFAF7] p-4 font-normal outline-none focus:border-[#BA7517]">{options.map((option) => <option key={option} value={option}>{renderLabel ? renderLabel(option) : option}</option>)}</select></label>;
+}
+
+function Metric({ label, value }: { label: string; value: string }) {
+  return <div className="flex items-center justify-between gap-4 rounded-2xl bg-[#FBFAF7] px-4 py-3"><span className="text-sm text-[#6B604D]">{label}</span><strong className="text-sm">{value}</strong></div>;
+}
+
+function ValueBlock({ label, value }: { label: string; value: string }) {
+  return <div><p className="text-xs uppercase tracking-[0.16em] text-[#6B604D]">{label}</p><p className="mt-1 text-2xl font-semibold">{value}</p></div>;
+}
+
+function BigMetric({ label, value }: { label: string; value: string }) {
+  return <div className="rounded-[1.7rem] border border-[#EADFCA] bg-[#FBFAF7] p-6"><p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#BA7517]">{label}</p><p className="mt-3 text-3xl font-semibold">{value}</p></div>;
+}
+
+function ClientCard({ eyebrow, title, text }: { eyebrow: string; title: string; text: string }) {
+  return <div className="rounded-[2rem] border border-[#EADFCA] p-6"><p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#BA7517]">{eyebrow}</p><h3 className="mt-2 text-xl font-semibold">{title}</h3><p className="mt-3 leading-7 text-[#6B604D]">{text}</p></div>;
+}
+
+function JourneyStep({ number, title, text }: { number: string; title: string; text: string }) {
+  return <div className="rounded-[2rem] border border-[#EADFCA] bg-white p-6"><div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F6E9CC] text-sm font-bold text-[#BA7517]">{number}</div><h3 className="mt-5 text-xl font-semibold">{title}</h3><p className="mt-3 text-sm leading-6 text-[#6B604D]">{text}</p></div>;
 }
