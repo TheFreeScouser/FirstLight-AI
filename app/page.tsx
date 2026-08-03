@@ -60,36 +60,36 @@ const pricing = [
     label: "Core starting point",
     title: "Beacon Workflow Audit",
     price: "£2,500 fixed",
-    text: "A focused 10-working-day engagement around one important business process.",
+    text: "A focused engagement, delivered over 10 working days, around one important business process.",
     includes: "Discovery, workflow mapping, wasted-time and risk assessment, future-state design, automation opportunities and a fixed implementation proposal.",
-    note: "Proceed with the implementation within 30 days and the £2,500 audit fee is credited against the project.",
+    note: "The audit is a valuable standalone deliverable. Any implementation is quoted separately using the completed blueprint.",
     featured: true,
   },
   {
-    label: "Build and implement",
-    title: "Workflow Automation Project",
-    price: "Typically £5,000–£15,000",
-    text: "Improve one painful workflow with focused automation, cleaner data flow and clearer handovers.",
-    includes: "Solution design, implementation, testing, documentation, training and launch support.",
+    label: "Prove one workflow",
+    title: "Beacon Automation Pilot",
+    price: "From £7,500",
+    text: "Prove the value of one clearly defined workflow before committing to a larger operational system.",
+    includes: "Detailed process mapping, solution design, one focused build, testing, documentation, team training and launch support.",
     note: "A fixed scope, success measure and price are agreed before work begins.",
     featured: false,
   },
   {
-    label: "More complex systems",
-    title: "AI & Automation Systems",
-    price: "Quoted to scope",
-    text: "For projects involving custom AI, multiple integrations, dashboards or internal operational tools.",
-    includes: "Technical discovery, phased delivery, risk controls, testing and adoption support.",
-    note: "Complex work is broken into clear stages so you do not commit to a large build before the value is proven.",
+    label: "Production-ready delivery",
+    title: "Beacon Workflow System",
+    price: "From £15,000",
+    text: "Design and implement a production-ready system involving multiple stages, integrations or operational controls.",
+    includes: "Technical discovery, future-state design, phased implementation, testing, governance, documentation and adoption support.",
+    note: "Complex programmes are divided into clear stages so value is proven before further investment.",
     featured: false,
   },
   {
-    label: "Ongoing support",
+    label: "Ongoing improvement",
     title: "Managed Improvement",
-    price: "£1,000–£2,500/month",
+    price: "From £1,500/month",
     text: "Ongoing support, optimisation and measured improvement for systems FirstLight has helped put in place.",
-    includes: "Monitoring, small changes, workflow reviews, team support and a prioritised improvement backlog.",
-    note: "The monthly level is based on the number and complexity of systems supported.",
+    includes: "Monitoring, small changes, workflow reviews, team support, benefits tracking and a prioritised improvement backlog.",
+    note: "The monthly level is based on the number and complexity of systems supported. Minimum terms apply.",
     featured: false,
   },
 ];
@@ -185,12 +185,12 @@ export default function FirstLightPage() {
             <div className="relative max-w-sm">
               <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[#D4AF37]">Core offer</p>
               <h2 className="mt-5 text-4xl font-semibold leading-tight">Beacon Workflow Audit</h2>
-              <p className="mt-4 text-2xl font-semibold text-[#D4AF37]">£2,500 fixed · 10 working days</p>
+              <p className="mt-4 text-2xl font-semibold text-[#D4AF37]">£2,500 fixed · delivered over 10 working days</p>
               <p className="mt-5 leading-7 text-white/70">
                 Map one important process, find the real cost of the friction and leave with a practical future-state design and fixed implementation proposal.
               </p>
               <p className="mt-5 rounded-2xl border border-white/10 bg-white/[0.05] p-4 text-sm leading-6 text-white/75">
-                Continue into implementation within 30 days and the audit fee is credited against the project.
+                A standalone decision-quality blueprint. Any implementation is scoped and priced separately.
               </p>
             </div>
           </div>
@@ -259,9 +259,9 @@ export default function FirstLightPage() {
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-3xl text-center">
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[#BA7517]">Transparent pricing</p>
-            <h2 className="mt-4 text-4xl font-semibold tracking-tight md:text-5xl">A clear starting point, not a vague day rate.</h2>
+            <h2 className="mt-4 text-4xl font-semibold tracking-tight md:text-5xl">A clear investment, not a vague day rate.</h2>
             <p className="mt-5 text-lg leading-8 text-[#6B604D]">
-              Every engagement is scoped around the business problem, the complexity of delivery and the value of fixing it. You will know the scope and price before work begins.
+              Every engagement is scoped around the business problem, delivery complexity and the value of fixing it. You will know the scope, success measures and price before work begins. Prices exclude VAT where applicable.
             </p>
           </div>
 
@@ -284,9 +284,9 @@ export default function FirstLightPage() {
 
           <div className="mt-10 rounded-[2rem] bg-[#18140D] p-8 text-white md:flex md:items-center md:justify-between md:gap-10">
             <div className="max-w-3xl">
-              <h3 className="text-2xl font-semibold">A smaller pilot may still be possible.</h3>
+              <h3 className="text-2xl font-semibold">Start with evidence before committing to a build.</h3>
               <p className="mt-3 leading-7 text-white/70">
-                Tightly scoped micro-projects can start from £1,500 where there is one narrow workflow, one clear output and limited integration work. This is not the default for larger operational problems.
+                The £2,500 Beacon Workflow Audit establishes the business case, future-state design and fixed implementation proposal before you invest £7,500 or more in delivery.
               </p>
             </div>
             <a href="#contact" className="mt-6 inline-flex shrink-0 rounded-2xl bg-[#D4AF37] px-6 py-3 font-semibold text-[#18140D] transition hover:bg-white md:mt-0">Discuss the workflow →</a>
@@ -382,7 +382,7 @@ export default function FirstLightPage() {
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[#D4AF37]">20-minute fit call</p>
             <h2 className="mt-4 text-4xl font-semibold tracking-tight md:text-5xl">Have a workflow worth fixing?</h2>
-            <p className="mt-5 leading-7 text-white/70">Send a short brief. I will review the problem and tell you whether it is a good fit for a Beacon Workflow Audit, a smaller pilot or no project at all.</p>
+            <p className="mt-5 leading-7 text-white/70">Send a short brief. I will review the problem and tell you whether it is a good fit for a Beacon Workflow Audit, an Automation Pilot or no project at all.</p>
             <p className="mt-6 text-sm leading-6 text-white/60">No pressure and no AI theatre. Just a practical conversation about the cost of the current process and what better could look like.</p>
             <div className="mt-8 rounded-2xl border border-white/10 bg-white/[0.04] p-5 text-sm leading-6 text-white/70">
               <span className="font-semibold text-white">Email:</span>{" "}
