@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  background: #efe9dd;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: #efe9dd;
+  color: #18140d;
+  font-family: var(--font-sans);
+  overscroll-behavior-y: none;
+}

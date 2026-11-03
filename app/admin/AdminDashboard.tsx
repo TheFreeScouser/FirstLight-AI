@@ -186,9 +186,6 @@ export default function AdminDashboard({ logoutAction }: { logoutAction: LogoutA
             <h1 className="mt-1 text-2xl font-semibold tracking-tight md:text-3xl">Beacon delivery and costing dashboard</h1>
           </div>
           <div className="flex items-center gap-3">
-            <a href="/admin/pricing" className="rounded-full bg-[#BA7517] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#18140D]">
-              Pricing app
-            </a>
             <a href="/" className="rounded-full border border-[#D8C99F] px-4 py-2 text-sm font-semibold text-[#18140D] transition hover:border-[#BA7517]">
               View website
             </a>

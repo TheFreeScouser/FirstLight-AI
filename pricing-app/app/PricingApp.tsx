@@ -24,6 +24,12 @@ import {
 
 type Tab = "rate" | "value" | "fee" | "retainer" | "target";
 
+/** Chrome/Android's install prompt event (not in the standard DOM types). */
+type InstallPromptEvent = Event & {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
+};
+
 type Pipeline = { projects: PipelineProject[]; retainers: PipelineRetainer[] };
 
 type Saved = {
@@ -59,6 +65,32 @@ export default function PricingApp() {
   const [pipeline, setPipeline] = useState<Pipeline>({ projects: [], retainers: [] });
   const [hydrated, setHydrated] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [installPrompt, setInstallPrompt] = useState<InstallPromptEvent | null>(null);
+
+  // Offline support + Android "Install" button.
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js").catch(() => {});
+    }
+    const onPrompt = (e: Event) => {
+      e.preventDefault();
+      setInstallPrompt(e as InstallPromptEvent);
+    };
+    const onInstalled = () => setInstallPrompt(null);
+    window.addEventListener("beforeinstallprompt", onPrompt);
+    window.addEventListener("appinstalled", onInstalled);
+    return () => {
+      window.removeEventListener("beforeinstallprompt", onPrompt);
+      window.removeEventListener("appinstalled", onInstalled);
+    };
+  }, []);
+
+  async function install() {
+    if (!installPrompt) return;
+    await installPrompt.prompt();
+    await installPrompt.userChoice.catch(() => null);
+    setInstallPrompt(null);
+  }
 
   // Load saved state once on the client. Storage can be unavailable (private mode), so fail quietly.
   useEffect(() => {
@@ -136,16 +168,28 @@ export default function PricingApp() {
         {/* Header + live quote */}
         <header className="sticky top-0 z-20 border-b border-[#EADFCA] bg-[#FBFAF7]/90 px-4 pb-3 pt-[max(env(safe-area-inset-top),12px)] backdrop-blur-xl">
           <div className="flex items-center justify-between gap-3">
-            <a href="/admin" className="flex items-center gap-2" aria-label="Back to FirstLight OS">
+            <div className="flex items-center gap-2">
               <Mark />
-              <span className="text-xs font-semibold tracking-[0.2em]">FIRSTLIGHT</span>
-            </a>
-            <button
-              onClick={newQuote}
-              className="rounded-full border border-[#D8C99F] px-3 py-1.5 text-xs font-semibold active:bg-[#F3ECDD]"
-            >
-              New quote
-            </button>
+              <span className="text-xs font-semibold tracking-[0.2em]">
+                FIRSTLIGHT <span className="text-[#BA7517]">PRICING</span>
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              {installPrompt ? (
+                <button
+                  onClick={install}
+                  className="rounded-full bg-[#BA7517] px-3 py-1.5 text-xs font-semibold text-white active:bg-[#18140D]"
+                >
+                  Install
+                </button>
+              ) : null}
+              <button
+                onClick={newQuote}
+                className="rounded-full border border-[#D8C99F] px-3 py-1.5 text-xs font-semibold active:bg-[#F3ECDD]"
+              >
+                New quote
+              </button>
+            </div>
           </div>
 
           <div className="mt-3 rounded-2xl bg-[#18140D] p-4 text-white">
