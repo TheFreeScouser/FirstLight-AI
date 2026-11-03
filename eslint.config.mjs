@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Standalone pricing app has its own config.
+    "pricing-app/**",
   ]),
 ]);
 
