@@ -21,6 +21,7 @@ import {
   roleAnnualValue,
   workingHours,
 } from "@/lib/pricing";
+import { type OfferDetails, buildOffer, clientFigures, defaultOffer, offerSubject } from "@/lib/offer";
 
 type Tab = "rate" | "value" | "fee" | "retainer" | "target";
 
@@ -32,11 +33,27 @@ type InstallPromptEvent = Event & {
 
 type Pipeline = { projects: PipelineProject[]; retainers: PipelineRetainer[] };
 
+type Draft = {
+  id: string;
+  savedAt: string;
+  status: "draft" | "sent";
+  sentAt?: string;
+  project: ProjectInputs;
+  retainer: RetainerInputs;
+  offer: OfferDetails;
+  /** Fee and retainer at the time of saving, for the list. */
+  fee: number;
+  monthly: number;
+};
+
 type Saved = {
   settings: Settings;
   project: ProjectInputs;
   retainer: RetainerInputs;
   pipeline: Pipeline;
+  offer: OfferDetails;
+  drafts: Draft[];
+  draftId: string | null;
 };
 
 const STORAGE_KEY = "firstlight-pricing-v1";
@@ -66,6 +83,10 @@ export default function PricingApp() {
   const [hydrated, setHydrated] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [installPrompt, setInstallPrompt] = useState<InstallPromptEvent | null>(null);
+  const [offer, setOffer] = useState<OfferDetails>(defaultOffer);
+  const [drafts, setDrafts] = useState<Draft[]>([]);
+  const [draftId, setDraftId] = useState<string | null>(null);
+  const [sheet, setSheet] = useState<"drafts" | "offer" | null>(null);
 
   // Offline support + Android "Install" button.
   useEffect(() => {
@@ -103,6 +124,9 @@ export default function PricingApp() {
         if (saved.project) setProject({ ...defaultProject, ...saved.project });
         if (saved.retainer) setRetainer({ ...defaultRetainer, ...saved.retainer });
         if (saved.pipeline) setPipeline({ projects: saved.pipeline.projects ?? [], retainers: saved.pipeline.retainers ?? [] });
+        if (saved.offer) setOffer({ ...defaultOffer, ...saved.offer });
+        if (Array.isArray(saved.drafts)) setDrafts(saved.drafts);
+        if (saved.draftId) setDraftId(saved.draftId);
       }
     } catch {
       /* ignore */
@@ -114,12 +138,12 @@ export default function PricingApp() {
   useEffect(() => {
     if (!hydrated) return;
     try {
-      const data: Saved = { settings, project, retainer, pipeline };
+      const data: Saved = { settings, project, retainer, pipeline, offer, drafts, draftId };
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     } catch {
       /* ignore */
     }
-  }, [hydrated, settings, project, retainer, pipeline]);
+  }, [hydrated, settings, project, retainer, pipeline, offer, drafts, draftId]);
 
   useEffect(() => {
     if (!toast) return;
@@ -153,8 +177,67 @@ export default function PricingApp() {
   function newQuote() {
     setProject({ ...defaultProject, roles: [{ ...defaultProject.roles[0], id: uid() }] });
     setRetainer(defaultRetainer);
+    // Keep your own preferences (payment terms, sign-off), clear the client's details.
+    setOffer((o) => ({ ...o, contactName: "", email: "", summary: "" }));
+    setDraftId(null);
     setTab("value");
+    window.scrollTo({ top: 0 });
   }
+
+  const offerFigures = clientFigures(fee.fee, retainer.enabled ? ret.monthly : 0);
+
+  /** Save the current quote as a draft (or mark it sent). Updates the same draft if it was saved before. */
+  function saveDraft(status: Draft["status"] = "draft") {
+    const id = draftId ?? uid();
+    const now = new Date().toISOString();
+    setDrafts((list) => {
+      const existing = list.find((d) => d.id === id);
+      const draft: Draft = {
+        id,
+        savedAt: now,
+        // Once sent, a later "save" keeps the sent status.
+        status: status === "sent" || existing?.status === "sent" ? "sent" : "draft",
+        sentAt: status === "sent" ? now : existing?.sentAt,
+        project,
+        retainer,
+        offer,
+        // Store the prices as the client sees them (rounded up).
+        fee: offerFigures.fee,
+        monthly: offerFigures.monthly,
+      };
+      return [draft, ...list.filter((d) => d.id !== id)];
+    });
+    setDraftId(id);
+    if (status === "draft") setToast("Draft saved");
+  }
+
+  function openDraft(d: Draft) {
+    setProject({ ...defaultProject, ...d.project });
+    setRetainer({ ...defaultRetainer, ...d.retainer });
+    setOffer({ ...defaultOffer, ...d.offer });
+    setDraftId(d.id);
+    setSheet(null);
+    setTab("fee");
+    window.scrollTo({ top: 0 });
+    setToast(`Opened ${d.project.clientName.trim() || "draft"}`);
+  }
+
+  function deleteDraft(id: string) {
+    setDrafts((list) => list.filter((d) => d.id !== id));
+    if (id === draftId) setDraftId(null);
+  }
+
+  const currentDraft = drafts.find((d) => d.id === draftId) ?? null;
+
+  const actions = (
+    <QuoteActions
+      belowFloor={fee.belowFloor}
+      current={currentDraft}
+      onSend={() => setSheet("offer")}
+      onSave={() => saveDraft("draft")}
+      onAdd={addToPipeline}
+    />
+  );
 
   const status = fee.belowFloor
     ? { label: "Below floor", tone: "bad" as const }
@@ -170,22 +253,28 @@ export default function PricingApp() {
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <Mark />
-              <span className="text-xs font-semibold tracking-[0.2em]">
-                FIRSTLIGHT <span className="text-[#BA7517]">PRICING</span>
+              <span className="whitespace-nowrap text-xs font-semibold tracking-[0.2em]">
+                FIRSTLIGHT <span className="hidden text-[#BA7517] min-[460px]:inline">PRICING</span>
               </span>
             </div>
             <div className="flex items-center gap-2">
               {installPrompt ? (
                 <button
                   onClick={install}
-                  className="rounded-full bg-[#BA7517] px-3 py-1.5 text-xs font-semibold text-white active:bg-[#18140D]"
+                  className="whitespace-nowrap rounded-full bg-[#BA7517] px-3 py-1.5 text-xs font-semibold text-white active:bg-[#18140D]"
                 >
                   Install
                 </button>
               ) : null}
               <button
+                onClick={() => setSheet("drafts")}
+                className="whitespace-nowrap rounded-full border border-[#D8C99F] px-3 py-1.5 text-xs font-semibold active:bg-[#F3ECDD]"
+              >
+                Drafts{drafts.length ? ` · ${drafts.length}` : ""}
+              </button>
+              <button
                 onClick={newQuote}
-                className="rounded-full border border-[#D8C99F] px-3 py-1.5 text-xs font-semibold active:bg-[#F3ECDD]"
+                className="whitespace-nowrap rounded-full border border-[#D8C99F] px-3 py-1.5 text-xs font-semibold active:bg-[#F3ECDD]"
               >
                 New quote
               </button>
@@ -216,10 +305,27 @@ export default function PricingApp() {
         <main className="flex-1 px-4 pb-32 pt-4">
           {tab === "rate" && <RateTab settings={settings} setS={setS} rate={fee.rate} onReset={() => setSettings(defaultSettings)} />}
           {tab === "value" && <ValueTab project={project} setP={setP} setProject={setProject} settings={settings} />}
-          {tab === "fee" && <FeeTab project={project} setP={setP} fee={fee} onAdd={addToPipeline} />}
-          {tab === "retainer" && <RetainerTab retainer={retainer} setR={setR} ret={ret} rate={fee.rate} buffer={project.buffer} vAnnual={fee.vAnnual} onAdd={addToPipeline} />}
+          {tab === "fee" && <FeeTab project={project} setP={setP} fee={fee} actions={actions} />}
+          {tab === "retainer" && <RetainerTab retainer={retainer} setR={setR} ret={ret} rate={fee.rate} buffer={project.buffer} vAnnual={fee.vAnnual} actions={actions} />}
           {tab === "target" && <TargetTab mix={mix} pipeline={pipeline} setPipeline={setPipeline} settings={settings} />}
         </main>
+
+        {sheet === "drafts" ? (
+          <DraftsSheet drafts={drafts} currentId={draftId} onOpen={openDraft} onDelete={deleteDraft} onClose={() => setSheet(null)} />
+        ) : null}
+        {sheet === "offer" ? (
+          <OfferSheet
+            offer={offer}
+            setOffer={setOffer}
+            text={buildOffer(project, retainer, { ...offerFigures, pv: fee.pv, timeValue: fee.vTime }, offer)}
+            subject={offerSubject(project.clientName)}
+            onSent={(how) => {
+              saveDraft("sent");
+              setToast(how === "copy" ? "Offer copied · saved as sent" : "Offer ready · saved as sent");
+            }}
+            onClose={() => setSheet(null)}
+          />
+        ) : null}
 
         {toast ? (
           <div className="pointer-events-none fixed inset-x-0 bottom-24 z-30 mx-auto w-fit rounded-full bg-[#18140D] px-4 py-2 text-sm font-semibold text-white shadow-lg">
@@ -423,12 +529,12 @@ function FeeTab({
   project,
   setP,
   fee,
-  onAdd,
+  actions,
 }: {
   project: ProjectInputs;
   setP: <K extends keyof ProjectInputs>(k: K, v: ProjectInputs[K]) => void;
   fee: ReturnType<typeof projectFee>;
-  onAdd: () => void;
+  actions: React.ReactNode;
 }) {
   return (
     <>
@@ -466,9 +572,7 @@ function FeeTab({
         </p>
       </Card>
 
-      <PrimaryButton onClick={onAdd} disabled={fee.belowFloor}>
-        {fee.belowFloor ? "Cut scope before adding" : "Add to my year"}
-      </PrimaryButton>
+      {actions}
     </>
   );
 }
@@ -480,7 +584,7 @@ function RetainerTab({
   rate,
   buffer,
   vAnnual,
-  onAdd,
+  actions,
 }: {
   retainer: RetainerInputs;
   setR: <K extends keyof RetainerInputs>(k: K, v: RetainerInputs[K]) => void;
@@ -488,7 +592,7 @@ function RetainerTab({
   rate: number;
   buffer: number;
   vAnnual: number;
-  onAdd: () => void;
+  actions: React.ReactNode;
 }) {
   return (
     <>
@@ -533,7 +637,7 @@ function RetainerTab({
         </Card>
       </div>
 
-      <PrimaryButton onClick={onAdd}>Add project{retainer.enabled ? " + retainer" : ""} to my year</PrimaryButton>
+      {actions}
     </>
   );
 }
@@ -782,6 +886,183 @@ function Meter({
 }
 
 /* ------------------------------------------------------------------ */
+/* Drafts and offers                                                  */
+/* ------------------------------------------------------------------ */
+
+const when = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+const fmtWhen = (iso?: string) => (iso ? when.format(new Date(iso)) : "");
+
+function QuoteActions({
+  belowFloor,
+  current,
+  onSend,
+  onSave,
+  onAdd,
+}: {
+  belowFloor: boolean;
+  current: Draft | null;
+  onSend: () => void;
+  onSave: () => void;
+  onAdd: () => void;
+}) {
+  return (
+    <section className="mb-4 rounded-3xl border border-[#EADFCA] bg-white p-4">
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <h2 className="text-xs font-semibold uppercase tracking-[0.16em] text-[#6B604D]">Finish this quote</h2>
+        {current ? (
+          <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${current.status === "sent" ? "bg-[#DCEBD9] text-[#24502C]" : "bg-[#F3ECDD] text-[#6B604D]"}`}>
+            {current.status === "sent" ? `Sent ${fmtWhen(current.sentAt)}` : `Saved ${fmtWhen(current.savedAt)}`}
+          </span>
+        ) : null}
+      </div>
+      <div className="grid gap-2">
+        <PrimaryButton onClick={onSend} disabled={belowFloor}>
+          {belowFloor ? "Cut scope before sending" : "Send offer to client"}
+        </PrimaryButton>
+        <div className="grid grid-cols-2 gap-2">
+          <button onClick={onSave} className="rounded-2xl border border-[#18140D] py-3 text-sm font-semibold active:bg-[#F3ECDD]">
+            Save as draft
+          </button>
+          <button
+            onClick={onAdd}
+            disabled={belowFloor}
+            className="rounded-2xl border border-[#D8C99F] py-3 text-sm font-semibold text-[#6B604D] active:bg-[#F3ECDD] disabled:opacity-40"
+          >
+            Add to my year
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function DraftsSheet({
+  drafts,
+  currentId,
+  onOpen,
+  onDelete,
+  onClose,
+}: {
+  drafts: Draft[];
+  currentId: string | null;
+  onOpen: (d: Draft) => void;
+  onDelete: (id: string) => void;
+  onClose: () => void;
+}) {
+  return (
+    <Sheet title="Drafts" onClose={onClose}>
+      {drafts.length === 0 ? <Empty>No drafts yet. Tap “Save as draft” at the end of a quote.</Empty> : null}
+      {drafts.map((d) => (
+        <div key={d.id} className={`flex items-center gap-3 rounded-2xl p-3 ${d.id === currentId ? "bg-[#F6F1E7] ring-1 ring-[#D8C99F]" : "bg-[#FBFAF7]"}`}>
+          <button onClick={() => onOpen(d)} className="min-w-0 flex-1 text-left">
+            <p className="truncate text-sm font-semibold">{d.project.clientName.trim() || "Untitled client"}</p>
+            <p className="text-xs text-[#6B604D]">
+              {money(d.fee)}
+              {d.monthly ? ` + ${money(d.monthly)}/mo` : ""} · {d.status === "sent" ? `Sent ${fmtWhen(d.sentAt)}` : `Draft ${fmtWhen(d.savedAt)}`}
+            </p>
+          </button>
+          <span className={`h-2 w-2 shrink-0 rounded-full ${d.status === "sent" ? "bg-[#2F6B3A]" : "bg-[#D8C99F]"}`} aria-hidden />
+          <button
+            onClick={() => onDelete(d.id)}
+            className="flex h-8 w-8 items-center justify-center rounded-full text-[#9A3B2A] active:bg-[#F7E3DD]"
+            aria-label={`Delete ${d.project.clientName || "draft"}`}
+          >
+            ×
+          </button>
+        </div>
+      ))}
+    </Sheet>
+  );
+}
+
+function OfferSheet({
+  offer,
+  setOffer,
+  text,
+  subject,
+  onSent,
+  onClose,
+}: {
+  offer: OfferDetails;
+  setOffer: React.Dispatch<React.SetStateAction<OfferDetails>>;
+  text: string;
+  subject: string;
+  onSent: (how: "share" | "email" | "copy") => void;
+  onClose: () => void;
+}) {
+  const set = <K extends keyof OfferDetails>(k: K, v: OfferDetails[K]) => setOffer((o) => ({ ...o, [k]: v }));
+  const canShare = typeof navigator !== "undefined" && typeof navigator.share === "function";
+  const mailto = `mailto:${encodeURIComponent(offer.email.trim())}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}`;
+
+  async function share() {
+    try {
+      await navigator.share({ title: subject, text });
+      onSent("share");
+    } catch {
+      /* cancelled */
+    }
+  }
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(text);
+      onSent("copy");
+    } catch {
+      /* clipboard blocked: the text is still visible to copy by hand */
+    }
+  }
+
+  return (
+    <Sheet title="Offer to client" onClose={onClose}>
+      <div className="grid grid-cols-2 gap-3">
+        <TextField label="Their first name" value={offer.contactName} onChange={(v) => set("contactName", v)} placeholder="e.g. Sarah" />
+        <TextField label="Their email" value={offer.email} onChange={(v) => set("email", v)} placeholder="Optional" type="email" />
+      </div>
+      <TextField label="What you'll do for them" value={offer.summary} onChange={(v) => set("summary", v)} placeholder="e.g. automate your invoice chasing" />
+
+      <details className="rounded-2xl border border-[#EADFCA] p-3">
+        <summary className="cursor-pointer text-sm font-semibold">Payment, deadline and sign-off</summary>
+        <div className="mt-3 grid gap-3">
+          <TextField label="How they pay" value={offer.payment} onChange={(v) => set("payment", v)} />
+          <NumberField label="Offer open for (days)" value={offer.validDays} onChange={(v) => set("validDays", Math.round(v))} />
+          <label className="grid gap-1">
+            <span className="text-sm font-semibold">Sign-off</span>
+            <textarea
+              value={offer.signOff}
+              onChange={(e) => set("signOff", e.target.value)}
+              rows={2}
+              className="rounded-xl border border-[#D8C99F] bg-[#FBFAF7] px-3 py-2 text-base outline-none focus:border-[#BA7517]"
+            />
+          </label>
+        </div>
+      </details>
+
+      <div>
+        <p className="mb-1 text-xs font-semibold uppercase tracking-[0.16em] text-[#6B604D]">What they&apos;ll read</p>
+        <div className="max-h-[38dvh] overflow-y-auto whitespace-pre-wrap rounded-2xl border border-[#EADFCA] bg-[#FBFAF7] p-3 text-sm leading-6" aria-label="Offer preview">
+          {text}
+        </div>
+        <p className="mt-1 text-[11px] text-[#6B604D]">Prices are rounded up. Your floor, rate and margins are never included.</p>
+      </div>
+
+      {canShare ? <PrimaryButton onClick={share}>Send… (WhatsApp, email, text)</PrimaryButton> : null}
+      <div className="grid grid-cols-2 gap-2">
+        <a
+          href={mailto}
+          onClick={() => onSent("email")}
+          className={`rounded-2xl py-3 text-center text-sm font-semibold ${canShare ? "border border-[#18140D] active:bg-[#F3ECDD]" : "bg-[#BA7517] text-white active:bg-[#18140D]"}`}
+        >
+          Email
+        </a>
+        <button onClick={copy} className="rounded-2xl border border-[#D8C99F] py-3 text-sm font-semibold active:bg-[#F3ECDD]">
+          Copy text
+        </button>
+      </div>
+    </Sheet>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* Primitives                                                         */
 /* ------------------------------------------------------------------ */
 
@@ -955,15 +1236,28 @@ function SliderField({
   );
 }
 
-function TextField({ label, value, onChange, placeholder }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string }) {
+function TextField({
+  label,
+  value,
+  onChange,
+  placeholder,
+  type = "text",
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  type?: "text" | "email";
+}) {
   return (
-    <label className="grid gap-1">
+    <label className="grid min-w-0 gap-1">
       <span className="text-sm font-semibold">{label}</span>
       <input
+        type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="rounded-xl border border-[#D8C99F] bg-[#FBFAF7] px-3 py-3 text-base outline-none focus:border-[#BA7517]"
+        className="w-full min-w-0 rounded-xl border border-[#D8C99F] bg-[#FBFAF7] px-3 py-3 text-base outline-none focus:border-[#BA7517]"
       />
     </label>
   );
@@ -1026,7 +1320,7 @@ function Sheet({ title, onClose, children }: { title: string; onClose: () => voi
   return (
     <div className="fixed inset-0 z-40 flex items-end justify-center bg-black/30" onClick={onClose}>
       <div
-        className="w-full max-w-[480px] rounded-t-3xl bg-white p-4 pb-[max(env(safe-area-inset-bottom),16px)]"
+        className="max-h-[92dvh] w-full max-w-[480px] overflow-y-auto overscroll-contain rounded-t-3xl bg-white p-4 pb-[max(env(safe-area-inset-bottom),16px)]"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-label={title}

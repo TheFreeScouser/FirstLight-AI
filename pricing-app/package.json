@@ -8,7 +8,7 @@
     "start": "npx serve@14.2.4 out",
     "lint": "eslint",
     "icons": "node scripts/make-icons.mjs",
-    "test": "node --experimental-strip-types --no-warnings --test tests/pricing.test.mjs"
+    "test": "node --experimental-strip-types --no-warnings --test tests/pricing.test.mjs tests/offer.test.mjs"
   },
   "dependencies": {
     "next": "16.2.4",

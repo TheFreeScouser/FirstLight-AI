@@ -15,6 +15,16 @@ It implements the FirstLight pricing formula:
 
 All formula logic is in `lib/pricing.ts`; the UI is `app/PricingApp.tsx`.
 
+## Drafts and client offers
+
+At the end of the Fee and Retainer tabs:
+
+- **Save as draft** stores the quote on the phone. Open saved quotes from **Drafts** in the header.
+- **Send offer to client** writes a short, plain-English offer (`lib/offer.ts`) and lets you
+  send it through the phone's share sheet (WhatsApp, Gmail, text…), by email, or copy it.
+  Prices are rounded up; the cost floor, hourly rate and margins are never included.
+  Sending marks the draft as **Sent**.
+
 ## Develop
 
 ```bash
