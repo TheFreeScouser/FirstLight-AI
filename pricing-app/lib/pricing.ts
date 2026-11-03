@@ -207,7 +207,13 @@ export type RetainerResult = {
   driver: "cost" | "value";
 };
 
-/** Rmonth = max((hm × ch + T) / (1 − m), γ × Vannual / 12) */
+/**
+ * Rmonth = max((hm × ch + T) / (1 − m), γ × Vannual / 12)
+ *
+ * Deliberately not multiplied by the adoption probability p: a retainer runs
+ * after go-live, so the client is paying for value they are already getting.
+ * If they don't adopt, they stop paying, which is where that risk is carried.
+ */
 export function monthlyRetainer(
   r: RetainerInputs,
   rate: number,

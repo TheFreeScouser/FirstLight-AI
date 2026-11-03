@@ -510,7 +510,7 @@ function RetainerTab({
             <NumberField label="Support hrs / month · hm" value={retainer.hoursPerMonth} onChange={(v) => setR("hoursPerMonth", v)} step={1} />
             <NumberField label="Tooling & API · T" hint="Per month" prefix="£" value={retainer.tooling} onChange={(v) => setR("tooling", v)} step={25} />
           </div>
-          <SliderField label="Share of ongoing value · γ" hint="Typically 20–30%." value={retainer.valueShare} onChange={(v) => setR("valueShare", v)} min={0.1} max={0.4} step={0.01} />
+          <SliderField label="Share of ongoing value · γ" hint="Typically 20–30%. Uses the full annual value (no adoption discount): the retainer starts after go-live, once the client is actually using it." value={retainer.valueShare} onChange={(v) => setR("valueShare", v)} min={0.1} max={0.4} step={0.01} />
         </Card>
 
         <Card>

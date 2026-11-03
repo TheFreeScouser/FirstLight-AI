@@ -22,6 +22,7 @@ cd pricing-app
 npm install
 npm run dev        # http://localhost:3000
 npm run build      # static site in out/
+npm test           # formula checks (Steps A–F)
 ```
 
 The service worker (offline mode) only registers in production builds.
