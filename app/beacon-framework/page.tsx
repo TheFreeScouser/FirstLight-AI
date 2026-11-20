@@ -71,13 +71,13 @@ export default function BeaconFrameworkPage() {
             <a href="/#work" className="hover:text-[#9a7624]">
               Work
             </a>
-            <a href="/#submit" className="hover:text-[#9a7624]">
+            <a href="/#contact" className="hover:text-[#9a7624]">
               Submit Brief
             </a>
           </nav>
 
           <a
-            href="/#submit"
+            href="/#contact"
             className="rounded-full bg-[#18140d] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#3a3022]"
           >
             Start a build
@@ -264,32 +264,7 @@ export default function BeaconFrameworkPage() {
               </div>
             </div>
 
-            <div className="rounded-3xl border border-[#eadfca] bg-white p-6">
-              <p className="text-sm font-semibold text-[#9a7624]">
-                OnlyLids
-              </p>
-              <h3 className="mt-4 text-xl font-semibold">
-                Unofficial fan companion and playlist builder
-              </h3>
-              <div className="mt-5 grid gap-3 text-sm leading-6 text-[#6b604d]">
-                <p>
-                  <span className="font-semibold text-[#18140d]">Signal:</span>{" "}
-                  fans struggle to navigate a large podcast archive.
-                </p>
-                <p>
-                  <span className="font-semibold text-[#18140d]">Shape:</span>{" "}
-                  Build My LidList guided recommendation flow.
-                </p>
-                <p>
-                  <span className="font-semibold text-[#18140d]">Trust:</span>{" "}
-                  clear unofficial disclaimer and public metadata only.
-                </p>
-                <p>
-                  <span className="font-semibold text-[#18140d]">Scale:</span>{" "}
-                  reusable content discovery template for podcasts and creators.
-                </p>
-              </div>
-            </div>
+
           </div>
         </div>
       </section>
@@ -305,7 +280,7 @@ export default function BeaconFrameworkPage() {
           </p>
 
           <a
-            href="/#submit"
+            href="/#contact"
             className="mt-8 inline-flex rounded-2xl bg-[#BA7517] px-7 py-4 font-semibold text-white transition hover:bg-[#9f6112]"
           >
             Submit Beacon Brief
