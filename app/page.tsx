@@ -1,5 +1,7 @@
 "use client";
 
+const BOOKING_URL = "https://calendly.com/ryanfleming-flemingengineers";
+
 const painPoints = [
   "Information lives in spreadsheets and inboxes",
   "Work relies on one person knowing how it all fits together",
@@ -64,11 +66,11 @@ const offers = [
   },
   {
     title: "AI Implementation",
-    price: "£5,000",
-    priceNote: "Average project fee",
+    price: "£3,000–£8,000",
+    priceNote: "Typical implementation range",
     label: "Build a useful solution",
     description: "An AI tool, automated workflow or system integration designed around a clearly defined problem, with testing, documentation and handover.",
-    note: "£5,000 is a typical planning figure, not a fixed price or minimum. Each project is scoped and quoted individually.",
+    note: "An indicative range, not a minimum or fixed package. Each project is scoped and quoted individually.",
   },
   {
     title: "Ongoing Support",
@@ -101,8 +103,8 @@ export default function FirstLightPage() {
             <a href="#how-it-works" className="hover:text-[#BA7517]">How it works</a>
             <a href="#pricing" className="hover:text-[#BA7517]">Pricing</a>
           </nav>
-          <a href="#contact" className="rounded-full bg-[#BA7517] px-4 py-2.5 text-center text-xs font-semibold text-white transition hover:bg-[#18140D] sm:px-5 sm:text-sm">
-            Request a call
+          <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" className="rounded-full bg-[#BA7517] px-4 py-2.5 text-center text-xs font-semibold text-white transition hover:bg-[#18140D] sm:px-5 sm:text-sm">
+            Choose a time
           </a>
         </div>
       </header>
@@ -120,38 +122,21 @@ export default function FirstLightPage() {
               FirstLight helps businesses measure the cost of messy processes, redesign the workflow and automate the work that should not stay manual.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <a href="#contact" className={buttonPrimary}>Request a 20-minute fit call</a>
+              <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" className={buttonPrimary}>Choose a time to talk ↗</a>
               <a href="#services" className={buttonSecondary}>See how we help</a>
             </div>
-            <p className="mt-6 text-sm text-[#6B604D]">Founder-led · Fixed scope · Measurable business outcomes</p>
+            <p className="mt-6 text-sm text-[#6B604D]">Founder-led · First-class robotics engineering · Practical delivery</p>
           </div>
 
           <aside className="rounded-3xl bg-[#18140D] p-7 text-white shadow-[0_20px_55px_rgba(24,20,13,0.12)] sm:p-9">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D4AF37]">Simple, transparent pricing</p>
-            <h2 className="mt-4 text-3xl font-semibold">A practical way to get started.</h2>
-            <div className="mt-7 divide-y divide-white/15">
-              <div className="flex items-baseline justify-between gap-4 py-4">
-                <p className="font-medium">Workflow Audit</p>
-                <p className="shrink-0 text-xl font-semibold text-[#D4AF37]">£2,500</p>
-              </div>
-              <div className="flex items-baseline justify-between gap-4 py-4">
-                <div>
-                  <p className="font-medium">AI Implementation</p>
-                  <p className="mt-1 text-xs text-white/60">Average project fee</p>
-                </div>
-                <p className="shrink-0 text-xl font-semibold text-[#D4AF37]">£5,000</p>
-              </div>
-              <div className="flex items-baseline justify-between gap-4 py-4">
-                <p className="font-medium">Ongoing Support</p>
-                <p className="shrink-0 text-xl font-semibold text-[#D4AF37]">£200<span className="text-xs font-normal text-white/65">/month</span></p>
-              </div>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D4AF37]">Meet the founder</p>
+            <div className="mt-5 flex items-center gap-4">
+              <div aria-hidden="true" className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border border-[#D4AF37]/40 bg-white/10 text-xl font-semibold text-[#D4AF37]">RF</div>
+              <div><h2 className="text-2xl font-semibold">Ryan Fleming</h2><p className="mt-1 text-sm text-white/65">Founder, FirstLight AI</p></div>
             </div>
-            <p className="mt-5 text-sm leading-6 text-white/70">
-              Not every project needs a full audit. We'll suggest the simplest appropriate starting point. Implementation is individually scoped and quoted.
-            </p>
-            <a href="#contact" className="mt-6 inline-flex font-semibold text-[#D4AF37] underline-offset-4 hover:underline">
-              Talk through your project →
-            </a>
+            <p className="mt-5 leading-7 text-white/80">First-class BEng in Robotics, Member of the IET, with several years in automotive engineering, vehicle quality and reliability testing programmes.</p>
+            <p className="mt-4 leading-7 text-white/80">I bring that engineering discipline to practical business automation: understand the process, fix the friction and deliver tools that work.</p>
+            <a href="#work" className="mt-6 inline-flex font-semibold text-[#D4AF37] hover:underline">See real project examples →</a>
           </aside>
         </div>
       </section>
@@ -207,31 +192,27 @@ export default function FirstLightPage() {
         </div>
       </section>
 
-      <section id="work" className="border-y border-[#EADFCA] bg-white px-5 py-16 sm:px-6 md:py-20">
-        <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-2 lg:items-center">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#BA7517]">Example of our work</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">Practical tools built around real problems.</h2>
-            <p className="mt-4 leading-7 text-[#6B604D]">
-              We combine engineering discipline, process thinking and practical automation rather than selling AI as the answer to every problem.
-            </p>
-            <p className="mt-5 text-sm leading-6 text-[#6B604D]">
-              <span className="font-semibold text-[#18140D]">Founder-led by Ryan Fleming.</span> Based in Liverpool and working with UK manufacturers, engineering teams, professional services firms and SMEs.
-            </p>
+      <section id="work" className="scroll-mt-24 border-y border-[#EADFCA] bg-white px-5 py-16 sm:px-6 md:py-20">
+        <div className="mx-auto max-w-6xl">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#BA7517]">Proof & experience</p>
+          <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">See the work, not just the pitch.</h2>
+          <p className="mt-4 max-w-3xl leading-7 text-[#6B604D]">Our public case-study library is growing. Here are an interactive demonstration and an active client engagement, with their status made clear. We won't invent ROI figures before they are measured.</p>
+          <div className="mt-8 grid gap-5 md:grid-cols-2">
+            <article className="flex flex-col rounded-2xl border border-[#EADFCA] bg-[#FBFAF7] p-7">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#BA7517]">Working demonstration</p>
+              <h3 className="mt-3 text-2xl font-semibold">QatarMatch AI</h3>
+              <p className="mt-3 leading-7 text-[#6B604D]">Natural-language property matching, ranked suggestions and structured lead capture with WhatsApp handoff.</p>
+              <p className="mt-4 text-sm leading-6 text-[#6B604D]"><strong>Evidence:</strong> a live demonstration of an end-to-end interaction. Not a claimed client ROI result.</p>
+              <a href="https://qatarmatch-ai.vercel.app/" target="_blank" rel="noopener noreferrer" className="mt-auto pt-6 font-semibold text-[#BA7517] hover:underline">Try the live demo ↗</a>
+            </article>
+            <article className="flex flex-col rounded-2xl border border-[#EADFCA] bg-[#FBFAF7] p-7">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#BA7517]">Client engagement · In progress</p>
+              <h3 className="mt-3 text-2xl font-semibold">Financial services automation</h3>
+              <p className="mt-3 leading-7 text-[#6B604D]">A UK financial services workflow project addressing repeated administration and information handovers between existing systems.</p>
+              <p className="mt-4 text-sm leading-6 text-[#6B604D]"><strong>Status:</strong> ongoing project. Time savings and financial outcomes have not yet been independently measured.</p>
+              <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mt-auto pt-6 font-semibold text-[#BA7517] hover:underline">Discuss a similar problem ↗</a>
+            </article>
           </div>
-          <article className="rounded-3xl bg-[#18140D] p-7 text-white sm:p-9">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D4AF37]">Featured project</p>
-            <h3 className="mt-3 text-2xl font-semibold">QatarMatch AI</h3>
-            <p className="mt-4 leading-7 text-white/75">
-              A property matching engine that turns natural-language briefs into ranked shortlists and better structured sales enquiries.
-            </p>
-            <p className="mt-4 text-sm leading-6 text-white/70">
-              Natural-language search, ranked matches, explanations, lead capture and WhatsApp handoff.
-            </p>
-            <a href="https://qatarmatch-ai.vercel.app/" target="_blank" rel="noreferrer" className="mt-6 inline-flex font-semibold text-[#D4AF37] underline-offset-4 hover:underline">
-              Explore the live demo ↗
-            </a>
-          </article>
         </div>
       </section>
 
@@ -256,8 +237,8 @@ export default function FirstLightPage() {
             ))}
           </div>
           <div className="mt-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-            <p className="max-w-xl text-sm leading-6 text-[#6B604D]">Not sure which fits? Request a free 20-minute conversation and we'll help you work out the right next step.</p>
-            <a href="#contact" className={buttonPrimary}>Request a fit call</a>
+            <p className="max-w-xl text-sm leading-6 text-[#6B604D]">Not sure which fits? Choose an introductory appointment or send a short brief below.</p>
+            <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" className={buttonPrimary}>Choose a time ↗</a>
           </div>
         </div>
       </section>
@@ -271,9 +252,10 @@ export default function FirstLightPage() {
               Tell us what is taking up your time. We will review the problem and discuss whether an audit, an AI implementation or light-touch ongoing support makes sense.
             </p>
             <p className="mt-5 text-sm leading-6 text-white/60">
-              Request a 20-minute fit call. No pressure and no AI theatre, just a practical conversation.
+              Choose an available appointment time directly, or use the form to explain your problem first.
             </p>
-            <p className="mt-7 text-sm text-white/70">
+            <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mt-7 inline-flex rounded-xl bg-[#D4AF37] px-6 py-3.5 font-semibold text-[#18140D] transition hover:bg-white">Choose a time on Calendly ↗</a>
+            <p className="mt-5 text-sm text-white/70">
               Prefer email?{" "}
               <a href="mailto:hello@firstlightai.co.uk" className="font-semibold text-[#D4AF37] underline-offset-4 hover:underline">hello@firstlightai.co.uk</a>
             </p>
@@ -297,9 +279,9 @@ export default function FirstLightPage() {
             </div>
             <input type="hidden" name="_subject" value="New FirstLight website enquiry" />
             <button type="submit" className="rounded-xl bg-[#D4AF37] px-6 py-3.5 font-semibold text-[#18140D] transition hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
-              Request a fit call
+              Send my enquiry
             </button>
-            <p className="text-xs text-white/60">Submitting this form sends us your enquiry so we can contact you. No appointment is booked automatically.</p>
+            <p className="text-xs text-white/60">We use your details to reply. Read our <a href="/privacy" className="font-semibold text-[#D4AF37] underline">privacy policy</a>. Prefer to meet? <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" className="font-semibold text-[#D4AF37] underline">Choose a time</a>.</p>
           </form>
         </div>
       </section>
@@ -309,9 +291,11 @@ export default function FirstLightPage() {
           <div>
             <p className="font-semibold tracking-[0.15em] text-[#18140D]">FIRSTLIGHT AI</p>
             <p className="mt-1">Clean process first. Useful AI second.</p>
+            <p className="mt-2 text-xs">A trading name of Fleming Engineers Ltd · Company no. 13863332</p>
           </div>
           <div className="flex flex-wrap gap-5">
             <a href="/beacon-framework" className="hover:text-[#BA7517]">Our approach</a>
+            <a href="/privacy" className="hover:text-[#BA7517]">Privacy policy</a>
             <a href="https://www.linkedin.com/company/firstlightai/" target="_blank" rel="noreferrer" className="hover:text-[#BA7517]">LinkedIn</a>
             <a href="mailto:hello@firstlightai.co.uk" className="hover:text-[#BA7517]">Email</a>
           </div>
