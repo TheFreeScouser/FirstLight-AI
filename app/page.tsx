@@ -1,5 +1,7 @@
 "use client";
 
+import BrandLogo from "./components/BrandLogo";
+
 const BOOKING_URL = "https://calendly.com/ryanfleming-flemingengineers";
 
 const painPoints = [
@@ -90,13 +92,8 @@ export default function FirstLightPage() {
     <main className="min-h-screen bg-[#FBFAF7] text-[#18140D]">
       <header className="sticky top-0 z-50 border-b border-[#EADFCA] bg-[#FBFAF7]/95 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4 sm:px-6">
-          <a href="#top" aria-label="FirstLight AI home" className="flex items-center gap-3">
-            <span aria-hidden="true" className="relative flex h-8 w-8 shrink-0 items-center justify-center text-[#BA7517]">
-              <span className="absolute h-px w-8 bg-current" />
-              <span className="absolute h-8 w-px bg-current" />
-              <span className="absolute h-5 w-5 rotate-45 border border-current" />
-            </span>
-            <span className="text-sm font-semibold tracking-[0.16em] sm:text-base">FIRSTLIGHT AI</span>
+          <a href="#top" aria-label="FirstLight AI home" className="flex shrink-0 items-center">
+            <BrandLogo className="h-auto w-[156px] sm:w-[215px] lg:w-[265px]" />
           </a>
           <nav aria-label="Main navigation" className="hidden items-center gap-7 text-sm text-[#6B604D] md:flex">
             <a href="#services" className="hover:text-[#BA7517]">Services</a>
