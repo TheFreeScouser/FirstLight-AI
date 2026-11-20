@@ -1,3 +1,5 @@
+import BrandLogo from "../components/BrandLogo";
+
 export default function BeaconFrameworkPage() {
   const stages = [
     {
@@ -59,9 +61,9 @@ export default function BeaconFrameworkPage() {
   return (
     <main className="min-h-screen bg-[#fbfaf7] text-[#18140d]">
       <header className="sticky top-0 z-50 border-b border-[#eadfca]/70 bg-[#fbfaf7]/80 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-          <a href="/" className="text-xl font-semibold tracking-tight">
-            FirstLight AI
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 sm:px-6">
+          <a href="/" aria-label="FirstLight AI home" className="flex shrink-0 items-center">
+            <BrandLogo className="h-auto w-[156px] sm:w-[215px] lg:w-[265px]" />
           </a>
 
           <nav className="hidden gap-8 text-sm text-[#6b604d] md:flex">
