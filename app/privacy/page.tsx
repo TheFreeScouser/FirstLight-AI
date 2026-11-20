@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import BrandLogo from "../components/BrandLogo";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -14,7 +15,7 @@ export default function PrivacyPage() {
     <main className="min-h-screen bg-[#FBFAF7] text-[#18140D]">
       <header className="border-b border-[#EADFCA] bg-white/80 px-6 py-5">
         <div className="mx-auto flex max-w-4xl items-center justify-between gap-4">
-          <a href="/" className="font-semibold tracking-[0.15em] text-[#18140D]">FIRSTLIGHT AI</a>
+          <a href="/" aria-label="FirstLight AI home" className="flex shrink-0 items-center"><BrandLogo className="h-auto w-[156px] sm:w-[215px] lg:w-[265px]" /></a>
           <a href="/#contact" className="text-sm font-semibold text-[#BA7517] hover:underline">Contact us</a>
         </div>
       </header>
