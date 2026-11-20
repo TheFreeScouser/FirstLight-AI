@@ -55,28 +55,28 @@ const steps = [
 
 const offers = [
   {
-    title: "Beacon Workflow Audit",
-    price: "£2,500 fixed",
-    label: "Start here",
-    description: "A focused 10-working-day review of one important process, with workflow mapping, cost and risk assessment, a future-state design and fixed implementation proposal.",
+    title: "Workflow Audit",
+    price: "£2,500",
+    priceNote: "Fixed fee",
+    label: "Understand the opportunity",
+    description: "A focused review of one important process, typically delivered over 10 working days. We map the workflow, identify wasted time and risk, and provide a practical improvement plan and implementation proposal.",
+    note: "A useful standalone deliverable. An audit is not required for every implementation.",
   },
   {
-    title: "Beacon Automation Pilot",
-    price: "From £7,500",
-    label: "Prove one workflow",
-    description: "One clearly scoped build, including design, testing, documentation, team training and launch support.",
+    title: "AI Implementation",
+    price: "£5,000",
+    priceNote: "Average project fee",
+    label: "Build a useful solution",
+    description: "An AI tool, automated workflow or system integration designed around a clearly defined problem, with testing, documentation and handover.",
+    note: "£5,000 is a typical planning figure, not a fixed price or minimum. Each project is scoped and quoted individually.",
   },
   {
-    title: "Beacon Workflow System",
-    price: "From £15,000",
-    label: "More complex delivery",
-    description: "A production-ready system with multiple stages, integrations or operational controls, delivered in clear phases.",
-  },
-  {
-    title: "Managed Improvement",
-    price: "From £1,500/month",
-    label: "Ongoing support",
-    description: "Monitoring, workflow reviews, support and incremental improvements for systems FirstLight has delivered. Minimum terms apply.",
+    title: "Ongoing Support",
+    price: "£200",
+    priceNote: "Per month",
+    label: "Keep things running",
+    description: "Light-touch support and ongoing improvement for an agreed workflow or tool after launch, within a clearly defined monthly scope.",
+    note: "Larger changes, new integrations and additional builds are quoted separately.",
   },
 ];
 
@@ -127,18 +127,30 @@ export default function FirstLightPage() {
           </div>
 
           <aside className="rounded-3xl bg-[#18140D] p-7 text-white shadow-[0_20px_55px_rgba(24,20,13,0.12)] sm:p-9">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D4AF37]">A clear starting point</p>
-            <h2 className="mt-4 text-3xl font-semibold">Beacon Workflow Audit</h2>
-            <p className="mt-3 text-2xl font-semibold text-[#D4AF37]">£2,500 fixed</p>
-            <p className="mt-2 text-sm text-white/70">Delivered over 10 working days</p>
-            <p className="mt-6 leading-7 text-white/80">
-              Map one important process, find the real cost of friction and leave with a practical future-state design and fixed implementation proposal.
-            </p>
-            <p className="mt-5 border-t border-white/15 pt-5 text-sm leading-6 text-white/60">
-              The audit is a standalone blueprint. Implementation is scoped and priced separately.
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D4AF37]">Simple, transparent pricing</p>
+            <h2 className="mt-4 text-3xl font-semibold">A practical way to get started.</h2>
+            <div className="mt-7 divide-y divide-white/15">
+              <div className="flex items-baseline justify-between gap-4 py-4">
+                <p className="font-medium">Workflow Audit</p>
+                <p className="shrink-0 text-xl font-semibold text-[#D4AF37]">£2,500</p>
+              </div>
+              <div className="flex items-baseline justify-between gap-4 py-4">
+                <div>
+                  <p className="font-medium">AI Implementation</p>
+                  <p className="mt-1 text-xs text-white/60">Average project fee</p>
+                </div>
+                <p className="shrink-0 text-xl font-semibold text-[#D4AF37]">£5,000</p>
+              </div>
+              <div className="flex items-baseline justify-between gap-4 py-4">
+                <p className="font-medium">Ongoing Support</p>
+                <p className="shrink-0 text-xl font-semibold text-[#D4AF37]">£200<span className="text-xs font-normal text-white/65">/month</span></p>
+              </div>
+            </div>
+            <p className="mt-5 text-sm leading-6 text-white/70">
+              Not every project needs a full audit. We'll suggest the simplest appropriate starting point. Implementation is individually scoped and quoted.
             </p>
             <a href="#contact" className="mt-6 inline-flex font-semibold text-[#D4AF37] underline-offset-4 hover:underline">
-              Discuss your workflow →
+              Talk through your project →
             </a>
           </aside>
         </div>
@@ -225,26 +237,27 @@ export default function FirstLightPage() {
 
       <section id="pricing" className="scroll-mt-24 px-5 py-16 sm:px-6 md:py-20">
         <div className="mx-auto max-w-6xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#BA7517]">Transparent pricing</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">A clear investment, not a vague day rate.</h2>
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#BA7517]">Simple pricing</p>
+          <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">Three clear ways to work together.</h2>
           <p className="mt-4 max-w-3xl leading-7 text-[#6B604D]">
-            Every engagement is scoped around the business problem and the value of fixing it. The scope, success measures and price are agreed before work begins. Prices exclude VAT where applicable.
+            From understanding a slow process to building a useful AI tool or automation, choose the help you need. An audit isn't compulsory for every project. Implementation fees depend on scope, and you'll receive a clear quote before work begins. Prices exclude VAT where applicable.
           </p>
-          <div className="mt-8 overflow-hidden rounded-2xl border border-[#EADFCA] bg-white">
+          <div className="mt-9 grid gap-5 md:grid-cols-3">
             {offers.map((offer, i) => (
-              <article key={offer.title} className={i === 0 ? "grid gap-3 bg-[#F6E9CC]/45 p-6 md:grid-cols-[1fr_auto] md:gap-7" : "grid gap-3 border-t border-[#EADFCA] p-6 md:grid-cols-[1fr_auto] md:gap-7"}>
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#BA7517]">{offer.label}</p>
-                  <h3 className="mt-1 text-lg font-semibold">{offer.title}</h3>
-                  <p className="mt-2 max-w-3xl text-sm leading-6 text-[#6B604D]">{offer.description}</p>
-                </div>
-                <p className="text-lg font-semibold text-[#18140D] md:text-right">{offer.price}</p>
+              <article key={offer.title} className={`flex h-full flex-col rounded-2xl border p-6 sm:p-7 ${i === 1 ? "border-[#D4AF37] bg-[#18140D] text-white shadow-lg" : "border-[#EADFCA] bg-white"}`}>
+                <p className={`text-xs font-semibold uppercase tracking-[0.14em] ${i === 1 ? "text-[#D4AF37]" : "text-[#BA7517]"}`}>{offer.label}</p>
+                <h3 className="mt-3 text-xl font-semibold">{offer.title}</h3>
+                <p className={`mt-6 text-3xl font-semibold ${i === 1 ? "text-[#D4AF37]" : "text-[#18140D]"}`}>{offer.price}</p>
+                <p className={`mt-1 text-sm ${i === 1 ? "text-white/65" : "text-[#6B604D]"}`}>{offer.priceNote}</p>
+                <p className={`mt-6 text-sm leading-7 ${i === 1 ? "text-white/80" : "text-[#6B604D]"}`}>{offer.description}</p>
+                <p className={`mt-4 border-t pt-4 text-xs leading-6 ${i === 1 ? "border-white/20 text-white/65" : "border-[#EADFCA] text-[#6B604D]"}`}>{offer.note}</p>
+                <a href="#contact" className={`mt-6 inline-flex font-semibold underline-offset-4 hover:underline ${i === 1 ? "text-[#D4AF37]" : "text-[#BA7517]"}`}>Let's talk →</a>
               </article>
             ))}
           </div>
-          <div className="mt-7 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-            <p className="max-w-xl text-sm leading-6 text-[#6B604D]">Not sure which fits? A short conversation is the easiest place to start.</p>
-            <a href="#contact" className={buttonPrimary}>Discuss your project</a>
+          <div className="mt-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+            <p className="max-w-xl text-sm leading-6 text-[#6B604D]">Not sure which fits? Request a free 20-minute conversation and we'll help you work out the right next step.</p>
+            <a href="#contact" className={buttonPrimary}>Request a fit call</a>
           </div>
         </div>
       </section>
@@ -255,7 +268,7 @@ export default function FirstLightPage() {
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D4AF37]">Start a conversation</p>
             <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">Have a workflow worth fixing?</h2>
             <p className="mt-5 leading-7 text-white/75">
-              Tell us what is taking up your time. We will review the problem and discuss whether a Beacon Workflow Audit, a focused pilot or another approach makes sense.
+              Tell us what is taking up your time. We will review the problem and discuss whether an audit, an AI implementation or light-touch ongoing support makes sense.
             </p>
             <p className="mt-5 text-sm leading-6 text-white/60">
               Request a 20-minute fit call. No pressure and no AI theatre, just a practical conversation.
